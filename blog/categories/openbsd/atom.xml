@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Openbsd | John Chapin's Blog]]></title>
+  <link href="http://johnchapin.github.io/blog/categories/openbsd/atom.xml" rel="self"/>
+  <link href="http://johnchapin.github.io/"/>
+  <updated>2013-12-14T21:09:29+08:00</updated>
+  <id>http://johnchapin.github.io/</id>
+  <author>
+    <name><![CDATA[John Chapin]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 3]]></title>
+    <link href="http://johnchapin.github.io/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/"/>
+    <updated>2013-12-11T00:00:00+08:00</updated>
+    <id>http://johnchapin.github.io/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3</id>
+    <content type="html"><![CDATA[<p>This is part 3 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN. <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn-part2.html">Part 2</a> covered the installation of OpenVPN and configuring the PKI system.</p>
+
+<p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
+
+<hr />
+
+<h3>Configuring OpenVPN</h3>
+
+<p>With the OpenVPN package installed and the PKI components in place, configuring and running the actual server software is straightforward. The OpenVPN package includes a sample server configuration file that makes a good starting point.</p>
+
+<!-- more -->
+
+
+<p>Make an OpenVPN configuration directory in <em>/etc</em>, and add a copy of the sample configuration, the CA certificate, the VPN server certificate and private key, and the Diffie-Hellman parameters:</p>
+
+<p>``` bash</p>
+
+<h1>As root&hellip;</h1>
+
+<p>$ mkdir /etc/openvpn</p>
+
+<h1>Copy the sample configuration</h1>
+
+<p>$ cp /usr/local/share/examples/openvpn/sample-config-files/server.conf /etc/openvpn/server.conf</p>
+
+<h1>Copy PKI materials from the easy-rsa working directory</h1>
+
+<p>$ cp easy-rsa/keys/ca.crt /etc/openvpn/ca.crt
+$ cp easy-rsa/keys/dh4096.pem /etc/openvpn/dh4096.pem
+$ cp easy-rsa/keys/vpn.example.com.crt /etc/openvpn/vpn.example.com.crt</p>
+
+<h1>Make a private directory for the server key</h1>
+
+<p>$ mkdir /etc/openvpn/private
+$ chmod 500 /etc/openvpn/private</p>
+
+<h1>Move the server key from the easy-rsa working directory</h1>
+
+<p>$ mv easy-rsa/keys/vpn.example.com.key /etc/openvpn/private/vpn.example.com.key
+$ chmod 400 /etc/openvpn/private/vpn.example.com.key
+```</p>
+
+<p>I made the following changes to the default configuration:</p>
+
+<ul>
+<li>Run the server on port 80, so it can be reached from networks that might restrict or firewall outbound traffic to other ports.</li>
+<li>Use the <em>tun0</em> device.</li>
+<li>Enable <em>redirect-gateway</em>, to force all client traffic through the VPN.</li>
+<li>Push DNS server information addresses to clients (OpenDNS, in this case).</li>
+<li>Only allow 2 clients at a time (a laptop and a mobile device).</li>
+</ul>
+
+
+<p>Here&rsquo;s the diff of the <em>server.conf</em> changes:</p>
+
+<p>``` bash
+$ diff /etc/openvpn/server.conf /usr/local/share/examples/openvpn/sample-config-files/server.conf
+32c32</p>
+
+<h2>&lt; port 80</h2>
+
+<blockquote><p>port 1194
+53c53</p>
+
+<h2>&lt; dev tun0</h2>
+
+<p>dev tun
+78,80c78,80
+&lt; ca /etc/openvpn/ca.crt
+&lt; cert /etc/openvpn/vpn.example.com.crt</p>
+
+<h2>&lt; key /etc/openvpn/private/vpn.example.com.key  # This file should be kept secret</h2>
+
+<p>ca ca.crt
+cert server.crt
+key server.key  # This file should be kept secret
+87c87</p>
+
+<h2>&lt; dh /etc/openvpn/dh4096.pem</h2>
+
+<p>dh dh1024.pem
+187c187</p>
+
+<h2>&lt; push &ldquo;redirect-gateway def1 bypass-dhcp&rdquo;</h2>
+
+<p>;push &ldquo;redirect-gateway def1 bypass-dhcp&rdquo;
+195,196c195,196
+&lt; push &ldquo;dhcp-option DNS 208.67.222.222&rdquo;</p>
+
+<h2>&lt; push &ldquo;dhcp-option DNS 208.67.220.220&rdquo;</h2>
+
+<p>;push &ldquo;dhcp-option DNS 208.67.222.222&rdquo;
+;push &ldquo;dhcp-option DNS 208.67.220.220&rdquo;
+255c255</p>
+
+<h2>&lt; max-clients 2</h2>
+
+<p>;max-clients 100
+```</p></blockquote>
+
+<p>Note that in this configuration, the server doesn&rsquo;t need to store individual client certificates. The server will only accept clients whose certificates were signed by the master CA certificate (the same one that signed the server certificate).</p>
+
+<h3>Configuring OpenBSD for OpenVPN</h3>
+
+<p>The OS requires a few additional tweaks to run OpenVPN.</p>
+
+<p>Turn on packet forwarding:</p>
+
+<p><code>
+$ sysctl -n net.inet.ip.forwarding=1
+</code></p>
+
+<p>Add the following line to <em>pf.conf</em> to perform Network Address Translation on VPN connections (the 10.8.0.0/24 block is distributed via DHCP to OpenVPN clients):</p>
+
+<p><code>
+pass out on em0 from 10.8.0.0/24 to any nat-to (em0)
+</code></p>
+
+<h3>Running the OpenVPN daemon</h3>
+
+<p>```
+$ /usr/local/sbin/openvpn &mdash;daemon &mdash;config /etc/openvpn/server.conf</p>
+
+<h1>Verify that it&rsquo;s actually running:</h1>
+
+<p>$ ps -aux | grep openvpn
+_openvpn  2900  0.0  0.3  1720  3424 ??  Ss    Mon03PM   21:49.15 /usr/local/sbin/openvpn &mdash;daemon &mdash;config /etc/openvpn/server.conf
+```</p>
+
+<p>Log output will appear in <em>/var/log/daemon</em>. At this point, there are no clients, so it&rsquo;s enough that the daemon starts without errors.</p>
+
+<h3>Part 4… Client configuration</h3>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 2]]></title>
+    <link href="http://johnchapin.github.io/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/"/>
+    <updated>2013-12-09T00:00:00+08:00</updated>
+    <id>http://johnchapin.github.io/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2</id>
+    <content type="html"><![CDATA[<p>This is part 2 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.</p>
+
+<p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
+
+<hr />
+
+<h3>OpenVPN Installation</h3>
+
+<p>Installing and configuring the OpenVPN package can seem daunting at first, but given a relatively simple VPN architecture (many clients, one server), the setup is straightforward. Many of the steps below are cribbed from the <a href="http://www.kernel-panic.it/openbsd/vpn/vpn4.html">OpenVPN section of &ldquo;Building VPNs on OpenBSD&rdquo;</a>, which is 4 years old but still informative.</p>
+
+<!-- more -->
+
+
+<p>Install the OpenVPN package from the installation media or an official OpenBSD mirror site. The OpenBSD FAQ has <a href="http://www.openbsd.org/faq/faq15.html#Easy">instructions</a> for setting up the package system.</p>
+
+<p>``` bash</p>
+
+<h1>Dutch mirror site</h1>
+
+<p>$ export PKG_PATH=&ldquo;<a href="http://ftp.nluug.nl/pub/OpenBSD/5.3/packages/">http://ftp.nluug.nl/pub/OpenBSD/5.3/packages/</a><code>machine -a</code>&rdquo;
+$ pkg_add openvpn
+```</p>
+
+<p>Next, make a copy of the easy-rsa directory:</p>
+
+<p><code>bash
+$ cp -R /usr/local/share/examples/openvpn/easy-rsa/2.0 easyrsa
+$ cd easyrsa
+</code></p>
+
+<h3>Public Key Infrastructure (PKI) Configuration</h3>
+
+<p>The version of easy-rsa that&rsquo;s included with OpenVPN on OpenBSD 5.3 is missing the <em>whichopenssl</em> script, so in the <em>vars</em> file, the <em>KEY_CONFIG</em> line must be edited in addition to the other <em>KEY*</em> lines. Here is a diff with my changes:</p>
+
+<p>``` bash
+$ diff vars /usr/local/share/examples/openvpn/easy-rsa/2.0/vars
+29c29</p>
+
+<h2>&lt; export KEY_CONFIG=&ldquo;$EASY_RSA/openssl-1.0.0.cnf&rdquo;</h2>
+
+<blockquote><p>export KEY_CONFIG=<code>$EASY_RSA/whichopensslcnf $EASY_RSA</code>
+53c53</p>
+
+<h2>&lt; export KEY_SIZE=4096</h2>
+
+<p>export KEY_SIZE=1024
+64,71c64,72
+&lt; export KEY_COUNTRY=&ldquo;ZZcountry&rdquo;
+&lt; export KEY_PROVINCE=&ldquo;ZZprovince&rdquo;
+&lt; export KEY_CITY=&ldquo;ZZcity&rdquo;
+&lt; export KEY_ORG=&ldquo;example&rdquo;
+&lt; export KEY_EMAIL=
+&lt; export KEY_CN=
+&lt; export KEY_NAME=</p>
+
+<h2>&lt; export KEY_OU=</h2>
+
+<p>export KEY_COUNTRY=&ldquo;US&rdquo;
+export KEY_PROVINCE=&ldquo;CA&rdquo;
+export KEY_CITY=&ldquo;SanFrancisco&rdquo;
+export KEY_ORG=&ldquo;Fort-Funston&rdquo;
+export KEY_EMAIL=&ldquo;<a href="&#109;&#97;&#105;&#x6c;&#x74;&#111;&#58;&#x6d;&#101;&#x40;&#x6d;&#x79;&#x68;&#111;&#x73;&#116;&#x2e;&#109;&#121;&#100;&#x6f;&#x6d;&#97;&#105;&#110;">&#x6d;&#101;&#x40;&#109;&#121;&#104;&#111;&#x73;&#116;&#46;&#109;&#121;&#100;&#111;&#109;&#x61;&#x69;&#x6e;</a>&rdquo;
+export KEY_EMAIL=<a href="&#109;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#x6d;&#97;&#105;&#x6c;&#64;&#104;&#x6f;&#x73;&#x74;&#x2e;&#x64;&#x6f;&#109;&#97;&#x69;&#110;">&#x6d;&#97;&#105;&#x6c;&#64;&#104;&#111;&#115;&#116;&#46;&#100;&#x6f;&#x6d;&#x61;&#105;&#110;</a>
+export KEY_CN=changeme
+export KEY_NAME=changeme
+export KEY_OU=changeme
+```</p></blockquote>
+
+<p>Because they are likely to change for each certificate generated, the <em>KEY_EMAIL</em>, <em>KEY_CN</em>, <em>KEY_NAME</em>, and <em>KEY_OU</em> values can be removed from the file.</p>
+
+<p>After editing the vars file, source it and run these scripts to setup the PKI system:</p>
+
+<p><code>bash
+$ . vars
+$ ./clean-all
+$ ./build-dh
+$ ./pkitool --initca
+</code></p>
+
+<p>Generate a certificate for the VPN server:</p>
+
+<p><code>bash
+$ ./pkitool --server vpn.example.com
+</code></p>
+
+<p>And one or more client certificates:</p>
+
+<p>``` bash</p>
+
+<h1>Can also supply KEY_CN, KEY_OU, and KEY_EMAIL</h1>
+
+<p>$ KEY_NAME=client1 ./pkitool client1.example.com
+```</p>
+
+<p>The <em>keys</em> directory should now be full of certificates, keys, and signing requests:</p>
+
+<p><code>bash
+$ ls keys/
+01.pem
+02.pem
+ca.crt
+ca.key
+dh4096.pem
+serial
+vpn.example.com.crt
+vpn.example.com.csr
+vpn.example.com.key
+client1.example.com.crt
+client1.example.com.csr
+client1.example.com.key
+...
+</code></p>
+
+<h3><a href="http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html">Part 3 &ndash; Running OpenVPN on OpenBSD</a></h3>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 1]]></title>
+    <link href="http://johnchapin.github.io/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/"/>
+    <updated>2013-12-07T00:00:00+08:00</updated>
+    <id>http://johnchapin.github.io/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1</id>
+    <content type="html"><![CDATA[<p>This is part 1 in a series of posts detailing how I secure my Internet communications using OpenBSD, OpenVPN, and other open-source software.</p>
+
+<p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
+
+<h3>Virtual Private Server</h3>
+
+<p>I prefer a virtual private server (VPS) over buying, configuring, shipping, upgrading, and disposing of a Real Machine™. Using QEMU/KVM, the hosting company <a href="http://transip.eu">TransIP</a> supports VPSs running <a href="http://www.openbsd.org">OpenBSD</a> 5.3. I&rsquo;m currently using their &ldquo;Blade VPS X1&rdquo; product, which costs €10/month and provides 1GB memory, 50GB storage, 1TB transfer, and importantly, a static IPv4 address.</p>
+
+<!-- more -->
+
+
+<h3>Why OpenBSD?</h3>
+
+<p>I trust OpenBSD to be the most secure operating system available, and I have several years of experience installing and using it. The OpenBSD development team is world-renowned for their commitment to security, and I truly believe that there is no better general-purpose operating system to use as a basis for this project.</p>
+
+<p>TransIP supplies installation files for OpenBSD 5.3. Unfortunately, the OpenBSD project does <em>not</em> digitally sign their releases, instead choosing only to provide SHA256 hashes of the installation set files to protect against corruption or tampering. In their own words, <a href="http://www.openbsd.org/faq/faq3.html#Verify">&ldquo;If the men in black suits are out to get you, they&rsquo;re going to get you.&rdquo;</a></p>
+
+<p>With that in mind, when using a VPS, we have no choice but to trust that the provider hasn&rsquo;t tampered with the installation process or tapped the VNC console (before SSH can be enabled) to capture our disk encryption or system passwords.</p>
+
+<h3>OpenBSD Installation with Full Disk Encryption</h3>
+
+<p>OpenBSD 5.3 supports full disk encryption, so I followed the steps in Ryan Kavanagh&rsquo;s blog post, <a href="http://ryanak.ca/planet-ubuntu/2013/03/26/Setting-up-full-disk-encryption-in-OpenBSD-5.3.html">&ldquo;Setting up full disk encryption in OpenBSD 5.3&rdquo;</a>. His instructions are comprehensive, but I found it useful to re-familiarize myself with both the <a href="http://www.openbsd.org/faq/faq4.html">OpenBSD installation process</a>, and the usage of <a href="http://www.openbsd.org/faq/faq14.html#fdisk">fdisk</a> in particular.</p>
+
+<p>After setting up the encrypted disk, I proceeded with the standard OpenBSD installation, using sd0 as the installation target, and selecting &ldquo;whole&rdquo; when prompted, to use the entire device. I chose to use a custom partition layout, forgoing multiple data partitions in favor of a single large &ldquo;/&rdquo; partition.</p>
+
+<p>When given the opportunity to select OpenBSD install packages, I chose only:</p>
+
+<ul>
+<li><strong>bsd</strong> &ndash; The Kernel</li>
+<li><strong>base53</strong> &ndash; Contains the base OpenBSD system</li>
+<li><strong>etc53</strong> &ndash;  Contains all the files in /etc</li>
+</ul>
+
+
+<p>This represents the bare minimum OpenBSD system necessary to support an OpenVPN server. Any additional software or services represent additional, unnecessary security risk.</p>
+
+<h3><a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html">Part 2 &ndash; OpenVPN Installation and PKI Configuration</a></h3>
+]]></content>
+  </entry>
+  
+</feed>

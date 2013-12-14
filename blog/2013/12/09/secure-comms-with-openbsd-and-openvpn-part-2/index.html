@@ -1,0 +1,371 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Secure Comms With OpenBSD and OpenVPN, Part 2 - John Chapin's Blog</title>
+  <meta name="author" content="John Chapin">
+
+  
+  <meta name="description" content="This is part 2 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In part 1, I set up an &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://johnchapin.github.io/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="John Chapin's Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">John Chapin's Blog</a></h1>
+  
+    <h2>Digital nomadery and shenanigans...</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:johnchapin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Secure Comms With OpenBSD and OpenVPN, Part 2</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-09T00:00:00+08:00" pubdate data-updated="true">Dec 9<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This is part 2 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.</p>
+
+<p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
+
+<hr />
+
+<h3>OpenVPN Installation</h3>
+
+<p>Installing and configuring the OpenVPN package can seem daunting at first, but given a relatively simple VPN architecture (many clients, one server), the setup is straightforward. Many of the steps below are cribbed from the <a href="http://www.kernel-panic.it/openbsd/vpn/vpn4.html">OpenVPN section of &ldquo;Building VPNs on OpenBSD&rdquo;</a>, which is 4 years old but still informative.</p>
+
+<!-- more -->
+
+
+<p>Install the OpenVPN package from the installation media or an official OpenBSD mirror site. The OpenBSD FAQ has <a href="http://www.openbsd.org/faq/faq15.html#Easy">instructions</a> for setting up the package system.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Dutch mirror site</span>
+</span><span class='line'><span class="nv">$ </span><span class="nb">export </span><span class="nv">PKG_PATH</span><span class="o">=</span><span class="s2">&quot;http://ftp.nluug.nl/pub/OpenBSD/5.3/packages/`machine -a`&quot;</span>
+</span><span class='line'><span class="nv">$ </span>pkg_add openvpn
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next, make a copy of the easy-rsa directory:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>cp -R /usr/local/share/examples/openvpn/easy-rsa/2.0 easyrsa
+</span><span class='line'><span class="nv">$ </span><span class="nb">cd </span>easyrsa
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Public Key Infrastructure (PKI) Configuration</h3>
+
+<p>The version of easy-rsa that&rsquo;s included with OpenVPN on OpenBSD 5.3 is missing the <em>whichopenssl</em> script, so in the <em>vars</em> file, the <em>KEY_CONFIG</em> line must be edited in addition to the other <em>KEY*</em> lines. Here is a diff with my changes:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>diff vars /usr/local/share/examples/openvpn/easy-rsa/2.0/vars
+</span><span class='line'>29c29
+</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_CONFIG</span><span class="o">=</span><span class="s2">&quot;$EASY_RSA/openssl-1.0.0.cnf&quot;</span>
+</span><span class='line'>---
+</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_CONFIG</span><span class="o">=</span><span class="sb">`</span><span class="nv">$EASY_RSA</span>/whichopensslcnf <span class="nv">$EASY_RSA</span><span class="sb">`</span>
+</span><span class='line'>53c53
+</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_SIZE</span><span class="o">=</span>4096
+</span><span class='line'>---
+</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_SIZE</span><span class="o">=</span>1024
+</span><span class='line'>64,71c64,72
+</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_COUNTRY</span><span class="o">=</span><span class="s2">&quot;ZZcountry&quot;</span>
+</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_PROVINCE</span><span class="o">=</span><span class="s2">&quot;ZZprovince&quot;</span>
+</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_CITY</span><span class="o">=</span><span class="s2">&quot;ZZcity&quot;</span>
+</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_ORG</span><span class="o">=</span><span class="s2">&quot;example&quot;</span>
+</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_EMAIL</span><span class="o">=</span>
+</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_CN</span><span class="o">=</span>
+</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_NAME</span><span class="o">=</span>
+</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_OU</span><span class="o">=</span>
+</span><span class='line'>---
+</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_COUNTRY</span><span class="o">=</span><span class="s2">&quot;US&quot;</span>
+</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_PROVINCE</span><span class="o">=</span><span class="s2">&quot;CA&quot;</span>
+</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_CITY</span><span class="o">=</span><span class="s2">&quot;SanFrancisco&quot;</span>
+</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_ORG</span><span class="o">=</span><span class="s2">&quot;Fort-Funston&quot;</span>
+</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_EMAIL</span><span class="o">=</span><span class="s2">&quot;me@myhost.mydomain&quot;</span>
+</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_EMAIL</span><span class="o">=</span>mail@host.domain
+</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_CN</span><span class="o">=</span>changeme
+</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_NAME</span><span class="o">=</span>changeme
+</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_OU</span><span class="o">=</span>changeme
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Because they are likely to change for each certificate generated, the <em>KEY_EMAIL</em>, <em>KEY_CN</em>, <em>KEY_NAME</em>, and <em>KEY_OU</em> values can be removed from the file.</p>
+
+<p>After editing the vars file, source it and run these scripts to setup the PKI system:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>. vars
+</span><span class='line'><span class="nv">$ </span>./clean-all
+</span><span class='line'><span class="nv">$ </span>./build-dh
+</span><span class='line'><span class="nv">$ </span>./pkitool --initca
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Generate a certificate for the VPN server:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>./pkitool --server vpn.example.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And one or more client certificates:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Can also supply KEY_CN, KEY_OU, and KEY_EMAIL</span>
+</span><span class='line'><span class="nv">$ KEY_NAME</span><span class="o">=</span>client1 ./pkitool client1.example.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <em>keys</em> directory should now be full of certificates, keys, and signing requests:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>ls keys/
+</span><span class='line'>01.pem
+</span><span class='line'>02.pem
+</span><span class='line'>ca.crt
+</span><span class='line'>ca.key
+</span><span class='line'>dh4096.pem
+</span><span class='line'>serial
+</span><span class='line'>vpn.example.com.crt
+</span><span class='line'>vpn.example.com.csr
+</span><span class='line'>vpn.example.com.key
+</span><span class='line'>client1.example.com.crt
+</span><span class='line'>client1.example.com.csr
+</span><span class='line'>client1.example.com.key
+</span><span class='line'>...
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3><a href="http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html">Part 3 &ndash; Running OpenVPN on OpenBSD</a></h3>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">John Chapin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-09T00:00:00+08:00" pubdate data-updated="true">Dec 9<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/openbsd/'>openbsd</a>, <a class='category' href='/blog/categories/openvpn/'>openvpn</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://johnchapin.github.io/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/" data-via="johnchapin" data-counturl="http://johnchapin.github.io/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/" title="Previous Post: Secure comms with OpenBSD and OpenVPN, part 1">&laquo; Secure comms with OpenBSD and OpenVPN, part 1</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/" title="Next Post: Secure comms with OpenBSD and OpenVPN, part 3">Secure comms with OpenBSD and OpenVPN, part 3 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Secure Comms With OpenBSD and OpenVPN, Part 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Secure Comms With OpenBSD and OpenVPN, Part 2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Secure Comms With OpenBSD and OpenVPN, Part 1</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - John Chapin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

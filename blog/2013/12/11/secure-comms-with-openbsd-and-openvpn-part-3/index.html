@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Secure Comms With OpenBSD and OpenVPN, Part 3 - John Chapin's Blog</title>
+  <meta name="author" content="John Chapin">
+
+  
+  <meta name="description" content="This is part 3 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In part 1, I set up an &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://johnchapin.github.io/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="John Chapin's Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">John Chapin's Blog</a></h1>
+  
+    <h2>Digital nomadery and shenanigans...</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:johnchapin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Secure Comms With OpenBSD and OpenVPN, Part 3</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-11T00:00:00+08:00" pubdate data-updated="true">Dec 11<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This is part 3 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN. <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn-part2.html">Part 2</a> covered the installation of OpenVPN and configuring the PKI system.</p>
+
+<p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
+
+<hr />
+
+<h3>Configuring OpenVPN</h3>
+
+<p>With the OpenVPN package installed and the PKI components in place, configuring and running the actual server software is straightforward. The OpenVPN package includes a sample server configuration file that makes a good starting point.</p>
+
+<!-- more -->
+
+
+<p>Make an OpenVPN configuration directory in <em>/etc</em>, and add a copy of the sample configuration, the CA certificate, the VPN server certificate and private key, and the Diffie-Hellman parameters:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># As root...</span>
+</span><span class='line'><span class="nv">$ </span>mkdir /etc/openvpn
+</span><span class='line'>
+</span><span class='line'><span class="c"># Copy the sample configuration</span>
+</span><span class='line'><span class="nv">$ </span>cp /usr/local/share/examples/openvpn/sample-config-files/server.conf /etc/openvpn/server.conf
+</span><span class='line'>
+</span><span class='line'><span class="c"># Copy PKI materials from the easy-rsa working directory</span>
+</span><span class='line'><span class="nv">$ </span>cp easy-rsa/keys/ca.crt /etc/openvpn/ca.crt
+</span><span class='line'><span class="nv">$ </span>cp easy-rsa/keys/dh4096.pem /etc/openvpn/dh4096.pem
+</span><span class='line'><span class="nv">$ </span>cp easy-rsa/keys/vpn.example.com.crt /etc/openvpn/vpn.example.com.crt
+</span><span class='line'>
+</span><span class='line'><span class="c"># Make a private directory for the server key</span>
+</span><span class='line'><span class="nv">$ </span>mkdir /etc/openvpn/private
+</span><span class='line'><span class="nv">$ </span>chmod 500 /etc/openvpn/private
+</span><span class='line'>
+</span><span class='line'><span class="c"># Move the server key from the easy-rsa working directory</span>
+</span><span class='line'><span class="nv">$ </span>mv easy-rsa/keys/vpn.example.com.key /etc/openvpn/private/vpn.example.com.key
+</span><span class='line'><span class="nv">$ </span>chmod 400 /etc/openvpn/private/vpn.example.com.key
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I made the following changes to the default configuration:</p>
+
+<ul>
+<li>Run the server on port 80, so it can be reached from networks that might restrict or firewall outbound traffic to other ports.</li>
+<li>Use the <em>tun0</em> device.</li>
+<li>Enable <em>redirect-gateway</em>, to force all client traffic through the VPN.</li>
+<li>Push DNS server information addresses to clients (OpenDNS, in this case).</li>
+<li>Only allow 2 clients at a time (a laptop and a mobile device).</li>
+</ul>
+
+
+<p>Here&rsquo;s the diff of the <em>server.conf</em> changes:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>diff /etc/openvpn/server.conf /usr/local/share/examples/openvpn/sample-config-files/server.conf
+</span><span class='line'>32c32
+</span><span class='line'>&lt; port 80
+</span><span class='line'>---
+</span><span class='line'>&gt; port 1194
+</span><span class='line'>53c53
+</span><span class='line'>&lt; dev tun0
+</span><span class='line'>---
+</span><span class='line'>&gt; dev tun
+</span><span class='line'>78,80c78,80
+</span><span class='line'>&lt; ca /etc/openvpn/ca.crt
+</span><span class='line'>&lt; cert /etc/openvpn/vpn.example.com.crt
+</span><span class='line'>&lt; key /etc/openvpn/private/vpn.example.com.key  <span class="c"># This file should be kept secret</span>
+</span><span class='line'>---
+</span><span class='line'>&gt; ca ca.crt
+</span><span class='line'>&gt; cert server.crt
+</span><span class='line'>&gt; key server.key  <span class="c"># This file should be kept secret</span>
+</span><span class='line'>87c87
+</span><span class='line'>&lt; dh /etc/openvpn/dh4096.pem
+</span><span class='line'>---
+</span><span class='line'>&gt; dh dh1024.pem
+</span><span class='line'>187c187
+</span><span class='line'>&lt; push <span class="s2">&quot;redirect-gateway def1 bypass-dhcp&quot;</span>
+</span><span class='line'>---
+</span><span class='line'>&gt; ;push <span class="s2">&quot;redirect-gateway def1 bypass-dhcp&quot;</span>
+</span><span class='line'>195,196c195,196
+</span><span class='line'>&lt; push <span class="s2">&quot;dhcp-option DNS 208.67.222.222&quot;</span>
+</span><span class='line'>&lt; push <span class="s2">&quot;dhcp-option DNS 208.67.220.220&quot;</span>
+</span><span class='line'>---
+</span><span class='line'>&gt; ;push <span class="s2">&quot;dhcp-option DNS 208.67.222.222&quot;</span>
+</span><span class='line'>&gt; ;push <span class="s2">&quot;dhcp-option DNS 208.67.220.220&quot;</span>
+</span><span class='line'>255c255
+</span><span class='line'>&lt; max-clients 2
+</span><span class='line'>---
+</span><span class='line'>&gt; ;max-clients 100
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note that in this configuration, the server doesn&rsquo;t need to store individual client certificates. The server will only accept clients whose certificates were signed by the master CA certificate (the same one that signed the server certificate).</p>
+
+<h3>Configuring OpenBSD for OpenVPN</h3>
+
+<p>The OS requires a few additional tweaks to run OpenVPN.</p>
+
+<p>Turn on packet forwarding:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sysctl -n net.inet.ip.forwarding<span class="o">=</span>1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add the following line to <em>pf.conf</em> to perform Network Address Translation on VPN connections (the 10.8.0.0/24 block is distributed via DHCP to OpenVPN clients):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>pass out on em0 from 10.8.0.0/24 to any nat-to <span class="o">(</span>em0<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Running the OpenVPN daemon</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>/usr/local/sbin/openvpn --daemon --config /etc/openvpn/server.conf
+</span><span class='line'>
+</span><span class='line'><span class="c"># Verify that it&#39;s actually running:</span>
+</span><span class='line'><span class="nv">$ </span>ps -aux | grep openvpn
+</span><span class='line'>_openvpn  2900  0.0  0.3  1720  3424 ??  Ss    Mon03PM   21:49.15 /usr/local/sbin/openvpn --daemon --config /etc/openvpn/server.conf
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Log output will appear in <em>/var/log/daemon</em>. At this point, there are no clients, so it&rsquo;s enough that the daemon starts without errors.</p>
+
+<h3>Part 4… Client configuration</h3>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">John Chapin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-11T00:00:00+08:00" pubdate data-updated="true">Dec 11<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/openbsd/'>openbsd</a>, <a class='category' href='/blog/categories/openvpn/'>openvpn</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://johnchapin.github.io/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/" data-via="johnchapin" data-counturl="http://johnchapin.github.io/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/" title="Previous Post: Secure comms with OpenBSD and OpenVPN, part 2">&laquo; Secure comms with OpenBSD and OpenVPN, part 2</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Secure Comms With OpenBSD and OpenVPN, Part 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Secure Comms With OpenBSD and OpenVPN, Part 2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Secure Comms With OpenBSD and OpenVPN, Part 1</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - John Chapin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Secure Comms With OpenBSD and OpenVPN, Part 1 - John Chapin's Blog</title>
+  <meta name="author" content="John Chapin">
+
+  
+  <meta name="description" content="This is part 1 in a series of posts detailing how I secure my Internet communications using OpenBSD, OpenVPN, and other open-source software. It &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://johnchapin.github.io/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="John Chapin's Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">John Chapin's Blog</a></h1>
+  
+    <h2>Digital nomadery and shenanigans...</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:johnchapin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Secure Comms With OpenBSD and OpenVPN, Part 1</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-07T00:00:00+08:00" pubdate data-updated="true">Dec 7<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This is part 1 in a series of posts detailing how I secure my Internet communications using OpenBSD, OpenVPN, and other open-source software.</p>
+
+<p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
+
+<h3>Virtual Private Server</h3>
+
+<p>I prefer a virtual private server (VPS) over buying, configuring, shipping, upgrading, and disposing of a Real Machine™. Using QEMU/KVM, the hosting company <a href="http://transip.eu">TransIP</a> supports VPSs running <a href="http://www.openbsd.org">OpenBSD</a> 5.3. I&rsquo;m currently using their &ldquo;Blade VPS X1&rdquo; product, which costs €10/month and provides 1GB memory, 50GB storage, 1TB transfer, and importantly, a static IPv4 address.</p>
+
+<!-- more -->
+
+
+<h3>Why OpenBSD?</h3>
+
+<p>I trust OpenBSD to be the most secure operating system available, and I have several years of experience installing and using it. The OpenBSD development team is world-renowned for their commitment to security, and I truly believe that there is no better general-purpose operating system to use as a basis for this project.</p>
+
+<p>TransIP supplies installation files for OpenBSD 5.3. Unfortunately, the OpenBSD project does <em>not</em> digitally sign their releases, instead choosing only to provide SHA256 hashes of the installation set files to protect against corruption or tampering. In their own words, <a href="http://www.openbsd.org/faq/faq3.html#Verify">&ldquo;If the men in black suits are out to get you, they&rsquo;re going to get you.&rdquo;</a></p>
+
+<p>With that in mind, when using a VPS, we have no choice but to trust that the provider hasn&rsquo;t tampered with the installation process or tapped the VNC console (before SSH can be enabled) to capture our disk encryption or system passwords.</p>
+
+<h3>OpenBSD Installation with Full Disk Encryption</h3>
+
+<p>OpenBSD 5.3 supports full disk encryption, so I followed the steps in Ryan Kavanagh&rsquo;s blog post, <a href="http://ryanak.ca/planet-ubuntu/2013/03/26/Setting-up-full-disk-encryption-in-OpenBSD-5.3.html">&ldquo;Setting up full disk encryption in OpenBSD 5.3&rdquo;</a>. His instructions are comprehensive, but I found it useful to re-familiarize myself with both the <a href="http://www.openbsd.org/faq/faq4.html">OpenBSD installation process</a>, and the usage of <a href="http://www.openbsd.org/faq/faq14.html#fdisk">fdisk</a> in particular.</p>
+
+<p>After setting up the encrypted disk, I proceeded with the standard OpenBSD installation, using sd0 as the installation target, and selecting &ldquo;whole&rdquo; when prompted, to use the entire device. I chose to use a custom partition layout, forgoing multiple data partitions in favor of a single large &ldquo;/&rdquo; partition.</p>
+
+<p>When given the opportunity to select OpenBSD install packages, I chose only:</p>
+
+<ul>
+<li><strong>bsd</strong> &ndash; The Kernel</li>
+<li><strong>base53</strong> &ndash; Contains the base OpenBSD system</li>
+<li><strong>etc53</strong> &ndash;  Contains all the files in /etc</li>
+</ul>
+
+
+<p>This represents the bare minimum OpenBSD system necessary to support an OpenVPN server. Any additional software or services represent additional, unnecessary security risk.</p>
+
+<h3><a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html">Part 2 &ndash; OpenVPN Installation and PKI Configuration</a></h3>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">John Chapin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-07T00:00:00+08:00" pubdate data-updated="true">Dec 7<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/openbsd/'>openbsd</a>, <a class='category' href='/blog/categories/openvpn/'>openvpn</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://johnchapin.github.io/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/" data-via="johnchapin" data-counturl="http://johnchapin.github.io/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/" title="Next Post: Secure comms with OpenBSD and OpenVPN, part 2">Secure comms with OpenBSD and OpenVPN, part 2 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Secure Comms With OpenBSD and OpenVPN, Part 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Secure Comms With OpenBSD and OpenVPN, Part 2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Secure Comms With OpenBSD and OpenVPN, Part 1</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - John Chapin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
