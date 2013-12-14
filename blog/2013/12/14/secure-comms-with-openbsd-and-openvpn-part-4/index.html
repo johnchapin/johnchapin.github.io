@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Secure Comms With OpenBSD and OpenVPN, Part 4 - John Chapin's Blog</title>
+  <meta name="author" content="John Chapin">
+
+  
+  <meta name="description" content="This is part 4 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In part 1, I set up an &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://johnchapin.github.io/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="John Chapin's Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">John Chapin's Blog</a></h1>
+  
+    <h2>Digital nomadery and shenanigans...</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:johnchapin.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Secure Comms With OpenBSD and OpenVPN, Part 4</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-14T11:28:34+08:00" pubdate data-updated="true">Dec 14<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This is part 4 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software.</p>
+
+<p>In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.<br/>
+<a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html">Part 2</a> covered the installation of OpenVPN and configuring the PKI system.<br/>
+<a href="http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html">Part 3</a> was a walk-through of OpenVPN configuration and actually running the OpenVPN daemon.</p>
+
+<p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
+
+<hr />
+
+<h3>Tunnelblick Installation</h3>
+
+<p>On Mac OS X, <a href="https://code.google.com/p/tunnelblick/">Tunnelblick</a> can be used to connect to the VPN server. It&rsquo;s an open-source application that offers simple, OpenVPN-specific configuration and a convenient graphical interface.</p>
+
+<p>To install, simply <a href="https://code.google.com/p/tunnelblick/wiki/DownloadsEntry?tm=2#Tunnelblick_Beta_Release">download</a> and run the installer.</p>
+
+<!-- more -->
+
+
+<p>Before configuring the VPN, transfer the CA certificate and the client certificate and key from the VPN server to your client computer:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ scp user@vpn.example.com:~/easy-rsa/keys/ca.crt ~/Desktop/
+</span><span class='line'>$ scp user@vpn.example.com:~/easy-rsa/keys/client1.example.com.crt ~/Desktop/
+</span><span class='line'>$ scp user@vpn.example.com:~/easy-rsa/keys/client1.example.com.key ~/Desktop/</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note that we could have generated the client certificate and key on the client machine, and gone through the certificate signing process without ever transmitting the client&rsquo;s private key over the network.</p>
+
+<h3>Tunnelblick Configuration</h3>
+
+<p>Open the Tunnelblick application. On the <em>Configurations</em> tab, click on the + icon in the lower left to add a new configuration. When prompted, select <em>&ldquo;I DO NOT have configuration files&rdquo;</em>.</p>
+
+<p><a href="http://imgur.com/7Q69mXG"><img src="http://i.imgur.com/7Q69mXGl.png" title="Hosted by imgur.com"/></a></p>
+
+<p>Next, select <em>&ldquo;Create sample configuration and edit it&rdquo;</em>.</p>
+
+<p><a href="http://imgur.com/1jx0mcs"><img src="http://i.imgur.com/1jx0mcsl.png" title="Hosted by imgur.com"/></a></p>
+
+<p>This process will create a sample configuration and put it on the Desktop.</p>
+
+<p><a href="http://imgur.com/NtO3i6R"><img src="http://i.imgur.com/NtO3i6Rl.png" title="Hosted by imgur.com"/></a></p>
+
+<p>Move the downloaded certificates and key into the configuration folder:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd Desktop
+</span><span class='line'>$ mv ca.crt Sample\ Tunnelblick\ VPN\ Configuration/
+</span><span class='line'>$ mv client1.example.com.* Sample\ Tunnelblick\ VPN\ Configuration/</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Edit the <em>config.ovpn</em> file. It may already be open in your default text editor. The only changes necessary are:</p>
+
+<ul>
+<li>Use port 80 instead of 1194</li>
+<li>Replace the dummy server name and PKI file names with valid ones.</li>
+</ul>
+
+
+<p>Here&rsquo;s a diff of those changes:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>42c42
+</span><span class='line'>&lt; remote vpn.example.com 80
+</span><span class='line'><span class="gd">---</span>
+</span><span class='line'>&gt; remote my-server-1 1194
+</span><span class='line'>89,90c89,90
+</span><span class='line'>&lt; cert client1.example.com.crt
+</span><span class='line'>&lt; key client1.example.com.key
+</span><span class='line'><span class="gd">---</span>
+</span><span class='line'>&gt; cert client.crt
+</span><span class='line'>&gt; key client.key
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The Tunnelblick configuration folder can be renamed (in this case, to &ldquo;Example VPN&rdquo;). To use this configuration in Tunnelblick, add the <em>.tblk</em> extension to the folder name, and then double-click the folder to install the configuration in Tunnelblick.</p>
+
+<p><a href="http://imgur.com/uKnpOVc"><img src="http://i.imgur.com/uKnpOVcl.png" title="Hosted by imgur.com"/></a></p>
+
+<h3>Running Tunnelblick</h3>
+
+<p>Click on the &ldquo;Railroad Tunnel&rdquo; icon in the Mac OS X menu bar, and select the &ldquo;Connect Example VPN&rdquo; option.</p>
+
+<p><a href="http://imgur.com/G0lXEOn"><img src="http://i.imgur.com/G0lXEOnl.png" title="Hosted by imgur.com"/></a></p>
+
+<p><strong>That&rsquo;s it</strong> &ndash; you&rsquo;re now using Tunnelblick to route your Internet communications through OpenVPN running on a VPS-hosted OpenBSD server.</p>
+
+<h3>Part 5&hellip; Wrap-up, OpenBSD 5.4 notes, and more!</h3>
+
+<p><a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">Part 1</a>, <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html">Part 2</a>, <a href="http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html">Part 3</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">John Chapin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-14T11:28:34+08:00" pubdate data-updated="true">Dec 14<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/openvpn/'>openvpn</a>, <a class='category' href='/blog/categories/osx/'>osx</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://johnchapin.github.io/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/" data-via="johnchapin" data-counturl="http://johnchapin.github.io/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/" title="Previous Post: Secure comms with OpenBSD and OpenVPN, part 3">&laquo; Secure comms with OpenBSD and OpenVPN, part 3</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Secure Comms With OpenBSD and OpenVPN, Part 4</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Secure Comms With OpenBSD and OpenVPN, Part 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Secure Comms With OpenBSD and OpenVPN, Part 2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Secure Comms With OpenBSD and OpenVPN, Part 1</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - John Chapin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
