@@ -2,8 +2,8 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://johnchapin.github.io
-title: John Chapin's Blog
+url: http://johnchapin.boostrot.net
+title: johnchapin.boostrot.net
 subtitle: Digital nomadery and shenanigans...
 author: John Chapin
 simple_search: http://google.com/search
@@ -94,7 +94,7 @@ disqus_short_name:
 disqus_show_comment_count: false
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-46462358-1
 
 # Facebook Like
 facebook_like: false
