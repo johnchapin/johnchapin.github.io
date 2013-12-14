@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://johnchapin.github.io/sitemap.xml 
+Sitemap: http://johnchapin.boostrot.net/sitemap.xml 

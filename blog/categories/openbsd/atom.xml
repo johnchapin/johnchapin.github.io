@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Openbsd | John Chapin's Blog]]></title>
-  <link href="http://johnchapin.github.io/blog/categories/openbsd/atom.xml" rel="self"/>
-  <link href="http://johnchapin.github.io/"/>
-  <updated>2013-12-14T21:55:11+08:00</updated>
-  <id>http://johnchapin.github.io/</id>
+  <title><![CDATA[Category: Openbsd | johnchapin.boostrot.net]]></title>
+  <link href="http://johnchapin.boostrot.net/blog/categories/openbsd/atom.xml" rel="self"/>
+  <link href="http://johnchapin.boostrot.net/"/>
+  <updated>2013-12-14T22:20:52+08:00</updated>
+  <id>http://johnchapin.boostrot.net/</id>
   <author>
     <name><![CDATA[John Chapin]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 3]]></title>
-    <link href="http://johnchapin.github.io/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/"/>
+    <link href="http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/"/>
     <updated>2013-12-11T00:00:00+08:00</updated>
-    <id>http://johnchapin.github.io/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3</id>
+    <id>http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3</id>
     <content type="html"><![CDATA[<p>This is part 3 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN. <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn-part2.html">Part 2</a> covered the installation of OpenVPN and configuring the PKI system.</p>
 
 <p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
@@ -155,9 +155,9 @@ _openvpn  2900  0.0  0.3  1720  3424 ??  Ss    Mon03PM   21:49.15 /usr/local/sbi
   
   <entry>
     <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 2]]></title>
-    <link href="http://johnchapin.github.io/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/"/>
+    <link href="http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/"/>
     <updated>2013-12-09T00:00:00+08:00</updated>
-    <id>http://johnchapin.github.io/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2</id>
+    <id>http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2</id>
     <content type="html"><![CDATA[<p>This is part 2 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.</p>
 
 <p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
@@ -219,8 +219,8 @@ $ diff vars /usr/local/share/examples/openvpn/easy-rsa/2.0/vars
 export KEY_PROVINCE=&ldquo;CA&rdquo;
 export KEY_CITY=&ldquo;SanFrancisco&rdquo;
 export KEY_ORG=&ldquo;Fort-Funston&rdquo;
-export KEY_EMAIL=&ldquo;<a href="&#109;&#x61;&#x69;&#108;&#116;&#111;&#58;&#109;&#x65;&#x40;&#x6d;&#x79;&#x68;&#x6f;&#x73;&#x74;&#46;&#x6d;&#121;&#100;&#x6f;&#x6d;&#97;&#105;&#110;">&#x6d;&#101;&#64;&#109;&#121;&#x68;&#x6f;&#x73;&#116;&#x2e;&#109;&#x79;&#x64;&#111;&#109;&#x61;&#x69;&#x6e;</a>&rdquo;
-export KEY_EMAIL=<a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#x3a;&#x6d;&#x61;&#105;&#x6c;&#64;&#x68;&#x6f;&#115;&#x74;&#x2e;&#100;&#111;&#109;&#x61;&#x69;&#110;">&#x6d;&#97;&#x69;&#108;&#64;&#104;&#x6f;&#x73;&#116;&#46;&#100;&#111;&#109;&#x61;&#x69;&#x6e;</a>
+export KEY_EMAIL=&ldquo;<a href="&#109;&#97;&#x69;&#108;&#116;&#111;&#58;&#109;&#x65;&#x40;&#109;&#121;&#104;&#111;&#115;&#x74;&#x2e;&#x6d;&#x79;&#x64;&#x6f;&#109;&#97;&#x69;&#110;">&#x6d;&#x65;&#64;&#109;&#121;&#x68;&#111;&#x73;&#116;&#x2e;&#x6d;&#x79;&#x64;&#x6f;&#109;&#97;&#x69;&#110;</a>&rdquo;
+export KEY_EMAIL=<a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#x6d;&#x61;&#x69;&#108;&#64;&#x68;&#x6f;&#115;&#x74;&#x2e;&#100;&#x6f;&#x6d;&#x61;&#x69;&#110;">&#109;&#97;&#105;&#x6c;&#x40;&#104;&#x6f;&#x73;&#x74;&#46;&#100;&#111;&#x6d;&#97;&#x69;&#110;</a>
 export KEY_CN=changeme
 export KEY_NAME=changeme
 export KEY_OU=changeme
@@ -277,9 +277,9 @@ client1.example.com.key
   
   <entry>
     <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 1]]></title>
-    <link href="http://johnchapin.github.io/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/"/>
+    <link href="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/"/>
     <updated>2013-12-07T00:00:00+08:00</updated>
-    <id>http://johnchapin.github.io/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1</id>
+    <id>http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1</id>
     <content type="html"><![CDATA[<p>This is part 1 in a series of posts detailing how I secure my Internet communications using OpenBSD, OpenVPN, and other open-source software.</p>
 
 <p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
