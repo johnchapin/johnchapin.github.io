@@ -17,6 +17,8 @@ It should be noted that even these measures are only securing part of my traffic
 
 I prefer a virtual private server (VPS) over buying, configuring, shipping, upgrading, and disposing of a Real Machine™. Using QEMU/KVM, the hosting company [TransIP](http://transip.eu) supports VPSs running [OpenBSD](http://www.openbsd.org) 5.3. I'm currently using their "Blade VPS X1" product, which costs €10/month and provides 1GB memory, 50GB storage, 1TB transfer, and importantly, a static IPv4 address.
 
+<!-- more -->
+
 ### Why OpenBSD?
 
 I trust OpenBSD to be the most secure operating system available, and I have several years of experience installing and using it. The OpenBSD development team is world-renowned for their commitment to security, and I truly believe that there is no better general-purpose operating system to use as a basis for this project.
