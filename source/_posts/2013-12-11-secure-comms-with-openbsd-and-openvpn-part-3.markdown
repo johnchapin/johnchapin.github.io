@@ -20,6 +20,8 @@ It should be noted that even these measures are only securing part of my traffic
 
 With the OpenVPN package installed and the PKI components in place, configuring and running the actual server software is straightforward. The OpenVPN package includes a sample server configuration file that makes a good starting point.
 
+<!-- more -->
+
 Make an OpenVPN configuration directory in _/etc_, and add a copy of the sample configuration, the CA certificate, the VPN server certificate and private key, and the Diffie-Hellman parameters:
 
 ```bash
