@@ -11,6 +11,8 @@ This is part 1 in a series of posts detailing how I secure my Internet communica
 
 It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).
 
+---
+
 ### Virtual Private Server
 
 I prefer a virtual private server (VPS) over buying, configuring, shipping, upgrading, and disposing of a Real Machine™. Using QEMU/KVM, the hosting company [TransIP](http://transip.eu) supports VPSs running [OpenBSD](http://www.openbsd.org) 5.3. I'm currently using their "Blade VPS X1" product, which costs €10/month and provides 1GB memory, 50GB storage, 1TB transfer, and importantly, a static IPv4 address.
