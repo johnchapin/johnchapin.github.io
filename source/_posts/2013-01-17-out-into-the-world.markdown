@@ -7,11 +7,13 @@ categories: nomadery
 published: true
 ---
 
-[![](http://i.imgur.com/Nm61Nevl.jpg)](http://imgur.com/Nm61Nev)
-
 Several people have asked me, "John, you handsome devil, how exactly did you manage to arrange your life to be able to pick up and go out into the world with no plans and no return ticket?"
 
 The answer, for me at least, was and is "persistence". I have persistently and obsessively, over the course of several months, poured over the details of my life and made sure that every action I took moved me closer to location independence. Not all of those decisions have been easy or straightforward.
+
+<!-- more -->
+
+[![](http://i.imgur.com/Nm61Nevl.jpg)](http://imgur.com/Nm61Nev)
 
 In no particular order, here's what I had to do.
 
