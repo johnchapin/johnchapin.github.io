@@ -20,6 +20,8 @@ This is the fifth and final part in a series of posts detailing how I’m securi
 
 A few weeks after I set up and configured the VPN system on OpenBSD 5.3, a new version of OpenBSD was released. This isn't too surprising of course, as the OpenBSD team releases every 6 months!
 
+<!-- more -->
+
 Here are some relevant changes that I've noticed:
 
 **The OpenVPN package has been updated to version 2.3.1p2** - Here's the [changelog](https://community.openvpn.net/openvpn/wiki/ChangesInOpenvpn23#OpenVPN2.3.0) from the previous 2.2.x version. Of particular note, OpenVPN now fully supports IPv6.
