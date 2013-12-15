@@ -6,11 +6,12 @@ comments: true
 categories: openvpn osx
 published: true
 ---
+
 This is part 4 in a series of posts detailing how I'm securing my Internet communications using open-source software.
 
-In [part 1](http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html), I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.  
-[Part 2](http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html) covered the installation of OpenVPN and configuring the PKI system.  
-[Part 3](http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html) was a walk-through of OpenVPN configuration and actually running the OpenVPN daemon.
+[Part 1][part1] - Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.  
+[Part 2][part2] - Installation of OpenVPN and configuring the PKI system.  
+[Part 3][part3] - OpenVPN configuration and actually running the OpenVPN daemon.  
 
 It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).
 
@@ -78,7 +79,8 @@ Here's a diff of those changes:
 > key client.key
 ```
 
-The Tunnelblick configuration folder can be renamed (in this case, to "Example VPN"). To use this configuration in Tunnelblick, add the _.tblk_ extension to the folder name, and then double-click the folder to install the configuration in Tunnelblick.
+The Tunnelblick configuration folder can be renamed (in this case, to "Example VPN"). To use this configuration in Tunnelblick, add the _.tblk_ extension to the folder name, and then 
+double-click the folder to install the configuration in Tunnelblick.
 
 <a href="http://imgur.com/uKnpOVc"><img src="http://i.imgur.com/uKnpOVcl.png" title="Hosted by imgur.com"/></a>
 
@@ -90,6 +92,12 @@ Click on the "Railroad Tunnel" icon in the Mac OS X menu bar, and select the "Co
 
 **That's it** - you're now using Tunnelblick to route your Internet communications through OpenVPN running on a VPS-hosted OpenBSD server.
 
-### Part 5... Wrap-up, OpenBSD 5.4 notes, and more!
+### [Part 5 - Wrap-up, OpenBSD 5.4 notes, and more!][part5]
 
-[Part 1](http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html), [Part 2](http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html), [Part 3](http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html)
+[Part 1][part1], [Part 2][part2], [Part 3][part3], [Part 4][part4], [Part 5][part5]
+
+[part1]:/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/
+[part2]:/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/
+[part3]:/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/
+[part4]:/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/
+[part5]:/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/
