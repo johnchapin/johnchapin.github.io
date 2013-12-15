@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Secure Comms With OpenBSD and OpenVPN, Part 1 - johnchapin.boostrot.net</title>
+  <title>Secure Comms With OpenBSD and OpenVPN, Part 5 - johnchapin.boostrot.net</title>
   <meta name="author" content="John Chapin">
 
   
-  <meta name="description" content="This is part 1 in a series of posts detailing how I secure my Internet communications using OpenBSD, OpenVPN, and other open-source software. It &hellip;">
+  <meta name="description" content="This is the fifth and final part in a series of posts detailing how I’m securing my Internet communications using open-source software. Part 1 &ndash &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1">
+  <link rel="canonical" href="http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="johnchapin.boostrot.net" type="application/atom+xml">
@@ -80,7 +80,7 @@
   
   <header>
     
-      <h1 class="entry-title">Secure Comms With OpenBSD and OpenVPN, Part 1</h1>
+      <h1 class="entry-title">Secure Comms With OpenBSD and OpenVPN, Part 5</h1>
     
     
       <p class="meta">
@@ -96,54 +96,66 @@
   
 
 
-<time datetime="2013-12-07T00:00:00+08:00" pubdate data-updated="true">Dec 7<span>th</span>, 2013</time>
+<time datetime="2013-12-15T13:21:11+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>This is part 1 in a series of posts detailing how I secure my Internet communications using OpenBSD, OpenVPN, and other open-source software.</p>
+<div class="entry-content"><p>This is the fifth and final part in a series of posts detailing how I’m securing my Internet communications using open-source software.</p>
 
-<p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
+<p><a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a> &ndash; Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.<br/>
+<a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a> &ndash; Installation of OpenVPN and configuring the PKI system.<br/>
+<a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a> &ndash; OpenVPN configuration and actually running the OpenVPN daemon.<br/>
+<a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a> &ndash; Installation and configuration of the Tunnelblick OpenVPN client on Mac OS X.</p>
 
 <hr />
 
-<h3>Virtual Private Server</h3>
+<h3>OpenBSD 5.4</h3>
 
-<p>I prefer a virtual private server (VPS) over buying, configuring, shipping, upgrading, and disposing of a Real Machine™. Using QEMU/KVM, the hosting company <a href="http://transip.eu">TransIP</a> supports VPSs running <a href="http://www.openbsd.org">OpenBSD</a> 5.3. I&rsquo;m currently using their &ldquo;Blade VPS X1&rdquo; product, which costs €10/month and provides 1GB memory, 50GB storage, 1TB transfer, and importantly, a static IPv4 address.</p>
+<p>A few weeks after I set up and configured the VPN system on OpenBSD 5.3, a <a href="http://www.openbsd.org/54.html">new version of OpenBSD</a> was released. This isn&rsquo;t too surprising of course, as the OpenBSD team releases every 6 months!</p>
 
 <!-- more -->
 
 
-<h3>Why OpenBSD?</h3>
+<p><img src="http://www.openbsd.org/images/Puffia.jpg" title="OpenBSD 5.4 Puffia" alt="" /></p>
 
-<p>I trust OpenBSD to be the most secure operating system available, and I have several years of experience installing and using it. The OpenBSD development team is world-renowned for their commitment to security, and I truly believe that there is no better general-purpose operating system to use as a basis for this project.</p>
+<p>Here are some relevant changes that I&rsquo;ve noticed:</p>
 
-<p><img src="http://openbsd.org/images/RoyPuffy.jpg" title="OpenBSD Roy Puffy" alt="" /></p>
+<p><strong>The OpenVPN package has been updated to version 2.3.1p2</strong> &ndash; Here&rsquo;s the <a href="https://community.openvpn.net/openvpn/wiki/ChangesInOpenvpn23#OpenVPN2.3.0">changelog</a> from the previous 2.2.x version. Of particular note, OpenVPN now fully supports IPv6.</p>
 
-<p>TransIP supplies installation files for OpenBSD 5.3. Unfortunately, the OpenBSD project does <em>not</em> digitally sign their releases, instead choosing only to provide SHA256 hashes of the installation set files to protect against corruption or tampering. In their own words, <a href="http://www.openbsd.org/faq/faq3.html#Verify">&ldquo;If the men in black suits are out to get you, they&rsquo;re going to get you.&rdquo;</a></p>
+<p><strong>The easy-rsa package is no longer a part of OpenVPN</strong> &ndash; This is a Good Thing™, as the version of easy-rsa included in the OpenVPN package on OpenBSD 5.3 is incomplete and difficult to reconcile with the <a href="https://github.com/OpenVPN/easy-rsa">official easy-rsa package</a>. The new easy-rsa package tracks version 2.2.0, and includes the <em>whichopenssl</em> script that was missing from the previous packaged version.</p>
 
-<p>With that in mind, when using a VPS, we have no choice but to trust that the provider hasn&rsquo;t tampered with the installation process or tapped the VNC console (before SSH can be enabled) to capture our disk encryption or system passwords.</p>
+<h3>iOS Client</h3>
 
-<h3>OpenBSD Installation with Full Disk Encryption</h3>
+<p>There is an excellent and free <a href="https://itunes.apple.com/app/openvpn-connect/id590379981">iOS application for OpenVPN</a>. Configuration is simple, just build an OpenVPN client configuration (see <a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>), and transfer the files to the OpenVPN application on your iOS device using iTunes.</p>
 
-<p>OpenBSD 5.3 supports full disk encryption, so I followed the steps in Ryan Kavanagh&rsquo;s blog post, <a href="http://ryanak.ca/planet-ubuntu/2013/03/26/Setting-up-full-disk-encryption-in-OpenBSD-5.3.html">&ldquo;Setting up full disk encryption in OpenBSD 5.3&rdquo;</a>. His instructions are comprehensive, but I found it useful to re-familiarize myself with both the <a href="http://www.openbsd.org/faq/faq4.html">OpenBSD installation process</a>, and the usage of <a href="http://www.openbsd.org/faq/faq14.html#fdisk">fdisk</a> in particular.</p>
+<p>Here&rsquo;s a screenshot of the OpenVPN client in action (with my actual VPN IP address blanked out):</p>
 
-<p>After setting up the encrypted disk, I proceeded with the standard OpenBSD installation, using sd0 as the installation target, and selecting &ldquo;whole&rdquo; when prompted, to use the entire device. I chose to use a custom partition layout, forgoing multiple data partitions in favor of a single large &ldquo;/&rdquo; partition.</p>
+<p><img src="http://i.imgur.com/TsUwTfpl.jpg" title="OpenVPN iOS Application" alt="" /></p>
 
-<p>When given the opportunity to select OpenBSD install packages, I chose only:</p>
+<h3>Parting Thoughts</h3>
+
+<p>I&rsquo;ve added the following paragraph to the introduction of each part of this series:</p>
+
+<blockquote><p><em>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</em></p></blockquote>
+
+<p>I can&rsquo;t stress enough how important it is to understand the limitations of a VPN and the risk inherent in communicating over the Internet. Because the Internet is a shared, public medium, communications channels that use it have an inherent level of exposure that can never be eliminated.</p>
+
+<p>With that concern in mind, I have to admit that my paranoia has practical limits. To a certain extent this series documents the risks I&rsquo;m willing to accept, like:</p>
 
 <ul>
-<li><strong>bsd</strong> &ndash; The Kernel</li>
-<li><strong>base53</strong> &ndash; Contains the base OpenBSD system</li>
-<li><strong>etc53</strong> &ndash;  Contains all the files in /etc</li>
+<li>Using a Virtual Private Server hosted in a third-party country.</li>
+<li>Installing the operating system on that VPS using installation media provided by the hosting company.</li>
+<li>Using closed, commericial hardware (a Macbook Air and an iPhone 4S), running closed-source, commericial operating systems (OS X and iOS).</li>
+<li>Storing passwords and credentials for all the above in a closed-source password management tool.</li>
 </ul>
 
 
-<p>This represents the bare minimum OpenBSD system necessary to support an OpenVPN server. Any additional software or services represent additional, unnecessary security risk.</p>
+<h3>The Bottom Line</h3>
 
-<h3><a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2 &ndash; OpenVPN Installation and PKI Configuration</a></h3>
+<p><strong>All of the technical measures in the world are unlikely to block a determined effort to access your communications.</strong> The solution outlined in this series should be considered a deterrent to casual snooping, and nothing more.</p>
 
 <p><a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a>, <a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a>, <a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a>, <a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>, <a href="/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5</a></p>
 </div>
@@ -168,12 +180,12 @@
   
 
 
-<time datetime="2013-12-07T00:00:00+08:00" pubdate data-updated="true">Dec 7<span>th</span>, 2013</time>
+<time datetime="2013-12-15T13:21:11+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/openbsd/'>openbsd</a>, <a class='category' href='/blog/categories/openvpn/'>openvpn</a>
+    <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/openbsd/'>openbsd</a>, <a class='category' href='/blog/categories/openvpn/'>openvpn</a>
   
 </span>
 
@@ -182,7 +194,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/" data-via="johnchapin" data-counturl="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/" data-via="johnchapin" data-counturl="http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/" >Tweet</a>
   
   
   
@@ -191,10 +203,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/03/05/oases-of-the-digital-nomad/" title="Previous Post: Oases of the Digital Nomad">&laquo; Oases of the Digital Nomad</a>
+        <a class="basic-alignment left" href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/" title="Previous Post: Secure comms with OpenBSD and OpenVPN, part 4">&laquo; Secure comms with OpenBSD and OpenVPN, part 4</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/" title="Next Post: Secure comms with OpenBSD and OpenVPN, part 2">Secure comms with OpenBSD and OpenVPN, part 2 &raquo;</a>
       
     </p>
   </footer>
@@ -260,8 +270,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/';
-        var disqus_url = 'http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/';
+        var disqus_identifier = 'http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/';
+        var disqus_url = 'http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/';
         var disqus_script = 'embed.js';
       
     (function () {

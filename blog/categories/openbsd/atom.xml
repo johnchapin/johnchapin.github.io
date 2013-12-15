@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Openbsd | johnchapin.boostrot.net]]></title>
   <link href="http://johnchapin.boostrot.net/blog/categories/openbsd/atom.xml" rel="self"/>
   <link href="http://johnchapin.boostrot.net/"/>
-  <updated>2013-12-15T23:48:20+08:00</updated>
+  <updated>2013-12-15T23:58:58+08:00</updated>
   <id>http://johnchapin.boostrot.net/</id>
   <author>
     <name><![CDATA[John Chapin]]></name>
@@ -12,6 +12,69 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 5]]></title>
+    <link href="http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/"/>
+    <updated>2013-12-15T13:21:11+08:00</updated>
+    <id>http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5</id>
+    <content type="html"><![CDATA[<p>This is the fifth and final part in a series of posts detailing how I’m securing my Internet communications using open-source software.</p>
+
+<p><a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a> &ndash; Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.<br/>
+<a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a> &ndash; Installation of OpenVPN and configuring the PKI system.<br/>
+<a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a> &ndash; OpenVPN configuration and actually running the OpenVPN daemon.<br/>
+<a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a> &ndash; Installation and configuration of the Tunnelblick OpenVPN client on Mac OS X.</p>
+
+<hr />
+
+<h3>OpenBSD 5.4</h3>
+
+<p>A few weeks after I set up and configured the VPN system on OpenBSD 5.3, a <a href="http://www.openbsd.org/54.html">new version of OpenBSD</a> was released. This isn&rsquo;t too surprising of course, as the OpenBSD team releases every 6 months!</p>
+
+<!-- more -->
+
+
+<p><img src="http://www.openbsd.org/images/Puffia.jpg" title="OpenBSD 5.4 Puffia" alt="" /></p>
+
+<p>Here are some relevant changes that I&rsquo;ve noticed:</p>
+
+<p><strong>The OpenVPN package has been updated to version 2.3.1p2</strong> &ndash; Here&rsquo;s the <a href="https://community.openvpn.net/openvpn/wiki/ChangesInOpenvpn23#OpenVPN2.3.0">changelog</a> from the previous 2.2.x version. Of particular note, OpenVPN now fully supports IPv6.</p>
+
+<p><strong>The easy-rsa package is no longer a part of OpenVPN</strong> &ndash; This is a Good Thing™, as the version of easy-rsa included in the OpenVPN package on OpenBSD 5.3 is incomplete and difficult to reconcile with the <a href="https://github.com/OpenVPN/easy-rsa">official easy-rsa package</a>. The new easy-rsa package tracks version 2.2.0, and includes the <em>whichopenssl</em> script that was missing from the previous packaged version.</p>
+
+<h3>iOS Client</h3>
+
+<p>There is an excellent and free <a href="https://itunes.apple.com/app/openvpn-connect/id590379981">iOS application for OpenVPN</a>. Configuration is simple, just build an OpenVPN client configuration (see <a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>), and transfer the files to the OpenVPN application on your iOS device using iTunes.</p>
+
+<p>Here&rsquo;s a screenshot of the OpenVPN client in action (with my actual VPN IP address blanked out):</p>
+
+<p><img src="http://i.imgur.com/TsUwTfpl.jpg" title="OpenVPN iOS Application" alt="" /></p>
+
+<h3>Parting Thoughts</h3>
+
+<p>I&rsquo;ve added the following paragraph to the introduction of each part of this series:</p>
+
+<blockquote><p><em>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</em></p></blockquote>
+
+<p>I can&rsquo;t stress enough how important it is to understand the limitations of a VPN and the risk inherent in communicating over the Internet. Because the Internet is a shared, public medium, communications channels that use it have an inherent level of exposure that can never be eliminated.</p>
+
+<p>With that concern in mind, I have to admit that my paranoia has practical limits. To a certain extent this series documents the risks I&rsquo;m willing to accept, like:</p>
+
+<ul>
+<li>Using a Virtual Private Server hosted in a third-party country.</li>
+<li>Installing the operating system on that VPS using installation media provided by the hosting company.</li>
+<li>Using closed, commericial hardware (a Macbook Air and an iPhone 4S), running closed-source, commericial operating systems (OS X and iOS).</li>
+<li>Storing passwords and credentials for all the above in a closed-source password management tool.</li>
+</ul>
+
+
+<h3>The Bottom Line</h3>
+
+<p><strong>All of the technical measures in the world are unlikely to block a determined effort to access your communications.</strong> The solution outlined in this series should be considered a deterrent to casual snooping, and nothing more.</p>
+
+<p><a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a>, <a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a>, <a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a>, <a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>, <a href="/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 3]]></title>
@@ -226,8 +289,8 @@ $ diff vars /usr/local/share/examples/openvpn/easy-rsa/2.0/vars
 export KEY_PROVINCE=&ldquo;CA&rdquo;
 export KEY_CITY=&ldquo;SanFrancisco&rdquo;
 export KEY_ORG=&ldquo;Fort-Funston&rdquo;
-export KEY_EMAIL=&ldquo;<a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#x6f;&#58;&#x6d;&#x65;&#64;&#109;&#121;&#x68;&#111;&#115;&#x74;&#46;&#109;&#121;&#x64;&#111;&#x6d;&#97;&#105;&#x6e;">&#x6d;&#101;&#64;&#x6d;&#x79;&#104;&#x6f;&#115;&#116;&#x2e;&#x6d;&#x79;&#x64;&#111;&#109;&#x61;&#105;&#110;</a>&rdquo;
-export KEY_EMAIL=<a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#58;&#x6d;&#x61;&#x69;&#x6c;&#x40;&#104;&#111;&#115;&#116;&#46;&#x64;&#x6f;&#x6d;&#x61;&#x69;&#110;">&#109;&#97;&#x69;&#108;&#64;&#104;&#x6f;&#115;&#x74;&#46;&#100;&#111;&#x6d;&#x61;&#105;&#110;</a>
+export KEY_EMAIL=&ldquo;<a href="&#109;&#x61;&#105;&#108;&#x74;&#111;&#x3a;&#x6d;&#101;&#64;&#109;&#x79;&#104;&#111;&#x73;&#x74;&#x2e;&#x6d;&#121;&#100;&#x6f;&#x6d;&#x61;&#105;&#110;">&#109;&#101;&#64;&#109;&#x79;&#104;&#111;&#115;&#116;&#46;&#x6d;&#121;&#x64;&#111;&#x6d;&#97;&#105;&#110;</a>&rdquo;
+export KEY_EMAIL=<a href="&#109;&#97;&#105;&#x6c;&#x74;&#x6f;&#58;&#109;&#97;&#x69;&#x6c;&#64;&#x68;&#x6f;&#115;&#x74;&#x2e;&#x64;&#x6f;&#x6d;&#x61;&#105;&#110;">&#109;&#97;&#x69;&#108;&#x40;&#x68;&#111;&#115;&#116;&#46;&#100;&#x6f;&#109;&#x61;&#x69;&#110;</a>
 export KEY_CN=changeme
 export KEY_NAME=changeme
 export KEY_OU=changeme
