@@ -6,8 +6,10 @@ comments: true
 categories: openbsd openvpn
 published: true
 ---
+This is part 3 in a series of posts detailing how I'm securing my Internet communications using open-source software.
 
-This is part 3 in a series of posts detailing how I'm securing my Internet communications using open-source software. In [part 1](http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html), I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN. [Part 2](http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn-part2.html) covered the installation of OpenVPN and configuring the PKI system.
+[Part 1][part1] - Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.  
+[Part 2][part2] - Installation of OpenVPN and configuring the PKI system.
 
 It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).
 
@@ -17,11 +19,9 @@ It should be noted that even these measures are only securing part of my traffic
 
 With the OpenVPN package installed and the PKI components in place, configuring and running the actual server software is straightforward. The OpenVPN package includes a sample server configuration file that makes a good starting point.
 
-<!-- more -->
-
 Make an OpenVPN configuration directory in _/etc_, and add a copy of the sample configuration, the CA certificate, the VPN server certificate and private key, and the Diffie-Hellman parameters:
 
-``` bash
+```bash
 # As root...
 $ mkdir /etc/openvpn
 
@@ -52,8 +52,8 @@ I made the following changes to the default configuration:
 
 Here's the diff of the _server.conf_ changes:
 
-``` bash
-$ diff /etc/openvpn/server.conf /usr/local/share/examples/openvpn/sample-config-files/server.conf
+```bash
+$ diff /etc/openvpn/server.conf  /usr/local/share/examples/openvpn/sample-config-files/server.conf           
 32c32
 < port 80
 ---
@@ -98,19 +98,19 @@ The OS requires a few additional tweaks to run OpenVPN.
 
 Turn on packet forwarding:
 
-```
+```bash
 $ sysctl -n net.inet.ip.forwarding=1
 ```
 
 Add the following line to _pf.conf_ to perform Network Address Translation on VPN connections (the 10.8.0.0/24 block is distributed via DHCP to OpenVPN clients):
 
-```
+```pf
 pass out on em0 from 10.8.0.0/24 to any nat-to (em0)
 ```
 
 ### Running the OpenVPN daemon
 
-```
+```bash
 $ /usr/local/sbin/openvpn --daemon --config /etc/openvpn/server.conf
 
 # Verify that it's actually running:
@@ -120,4 +120,12 @@ _openvpn  2900  0.0  0.3  1720  3424 ??  Ss    Mon03PM   21:49.15 /usr/local/sbi
 
 Log output will appear in _/var/log/daemon_. At this point, there are no clients, so it's enough that the daemon starts without errors.
 
-### Part 4… Client configuration
+### [Part 4 - Client configuration][part4]
+
+[Part 1][part1], [Part 2][part2], [Part 3][part3], [Part 4][part4], [Part 5][part5]
+
+[part1]:/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/
+[part2]:/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/
+[part3]:/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/
+[part4]:/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/
+[part5]:/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/
