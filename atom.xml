@@ -4,7 +4,7 @@
   <title><![CDATA[johnchapin.boostrot.net]]></title>
   <link href="http://johnchapin.boostrot.net/atom.xml" rel="self"/>
   <link href="http://johnchapin.boostrot.net/"/>
-  <updated>2013-12-15T06:10:26+08:00</updated>
+  <updated>2013-12-15T23:05:28+08:00</updated>
   <id>http://johnchapin.boostrot.net/</id>
   <author>
     <name><![CDATA[John Chapin]]></name>
@@ -20,9 +20,9 @@
     <id>http://johnchapin.boostrot.net/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4</id>
     <content type="html"><![CDATA[<p>This is part 4 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software.</p>
 
-<p>In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.<br/>
-<a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html">Part 2</a> covered the installation of OpenVPN and configuring the PKI system.<br/>
-<a href="http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html">Part 3</a> was a walk-through of OpenVPN configuration and actually running the OpenVPN daemon.</p>
+<p><a href="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a> &ndash; Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.<br/>
+<a href="http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a> &ndash; Installation of OpenVPN and configuring the PKI system.<br/>
+<a href="http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a> &ndash; OpenVPN configuration and actually running the OpenVPN daemon.</p>
 
 <p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
 
@@ -39,12 +39,13 @@
 
 <p>Before configuring the VPN, transfer the CA certificate and the client certificate and key from the VPN server to your client computer:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ scp user@vpn.example.com:~/easy-rsa/keys/ca.crt ~/Desktop/
-</span><span class='line'>$ scp user@vpn.example.com:~/easy-rsa/keys/client1.example.com.crt ~/Desktop/
-</span><span class='line'>$ scp user@vpn.example.com:~/easy-rsa/keys/client1.example.com.key ~/Desktop/</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>scp user@vpn.example.com:~/easy-rsa/keys/ca.crt ~/Desktop/
+</span><span class='line'><span class="nv">$ </span>scp user@vpn.example.com:~/easy-rsa/keys/client1.example.com.crt ~/Desktop/
+</span><span class='line'><span class="nv">$ </span>scp user@vpn.example.com:~/easy-rsa/keys/client1.example.com.key ~/Desktop/
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Note that we could have generated the client certificate and key on the client machine, and gone through the certificate signing process without ever transmitting the client&rsquo;s private key over the network.</p>
@@ -53,24 +54,25 @@
 
 <p>Open the Tunnelblick application. On the <em>Configurations</em> tab, click on the + icon in the lower left to add a new configuration. When prompted, select <em>&ldquo;I DO NOT have configuration files&rdquo;</em>.</p>
 
-<p><a href="http://imgur.com/7Q69mXG"><img src="http://i.imgur.com/7Q69mXGl.png" title="Hosted by imgur.com"/></a></p>
+<p><a href="http://imgur.com/7Q69mXG"><img src="http://i.imgur.com/7Q69mXGl.png" alt="" /></a></p>
 
 <p>Next, select <em>&ldquo;Create sample configuration and edit it&rdquo;</em>.</p>
 
-<p><a href="http://imgur.com/1jx0mcs"><img src="http://i.imgur.com/1jx0mcsl.png" title="Hosted by imgur.com"/></a></p>
+<p><a href="http://imgur.com/1jx0mcs"><img src="http://i.imgur.com/1jx0mcsl.png" alt="" /></a></p>
 
 <p>This process will create a sample configuration and put it on the Desktop.</p>
 
-<p><a href="http://imgur.com/NtO3i6R"><img src="http://i.imgur.com/NtO3i6Rl.png" title="Hosted by imgur.com"/></a></p>
+<p><a href="http://imgur.com/NtO3i6R"><img src="http://i.imgur.com/NtO3i6Rl.png" alt="" /></a></p>
 
 <p>Move the downloaded certificates and key into the configuration folder:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd Desktop
-</span><span class='line'>$ mv ca.crt Sample\ Tunnelblick\ VPN\ Configuration/
-</span><span class='line'>$ mv client1.example.com.* Sample\ Tunnelblick\ VPN\ Configuration/</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd </span>Desktop
+</span><span class='line'><span class="nv">$ </span>mv ca.crt Sample<span class="se">\ </span>Tunnelblick<span class="se">\ </span>VPN<span class="se">\ </span>Configuration/
+</span><span class='line'><span class="nv">$ </span>mv client1.example.com.* Sample<span class="se">\ </span>Tunnelblick<span class="se">\ </span>VPN<span class="se">\ </span>Configuration/
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Edit the <em>config.ovpn</em> file. It may already be open in your default text editor. The only changes necessary are:</p>
@@ -108,19 +110,19 @@
 
 <p>The Tunnelblick configuration folder can be renamed (in this case, to &ldquo;Example VPN&rdquo;). To use this configuration in Tunnelblick, add the <em>.tblk</em> extension to the folder name, and then double-click the folder to install the configuration in Tunnelblick.</p>
 
-<p><a href="http://imgur.com/uKnpOVc"><img src="http://i.imgur.com/uKnpOVcl.png" title="Hosted by imgur.com"/></a></p>
+<p><a href="http://imgur.com/uKnpOVc"><img src="http://i.imgur.com/uKnpOVcl.png" alt="" /></a></p>
 
 <h3>Running Tunnelblick</h3>
 
 <p>Click on the &ldquo;Railroad Tunnel&rdquo; icon in the Mac OS X menu bar, and select the &ldquo;Connect Example VPN&rdquo; option.</p>
 
-<p><a href="http://imgur.com/G0lXEOn"><img src="http://i.imgur.com/G0lXEOnl.png" title="Hosted by imgur.com"/></a></p>
+<p><a href="http://imgur.com/G0lXEOn"><img src="http://i.imgur.com/G0lXEOnl.png" alt="" /></a></p>
 
 <p><strong>That&rsquo;s it</strong> &ndash; you&rsquo;re now using Tunnelblick to route your Internet communications through OpenVPN running on a VPS-hosted OpenBSD server.</p>
 
-<h3>Part 5&hellip; Wrap-up, OpenBSD 5.4 notes, and more!</h3>
+<h3><a href="http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5 &ndash; Wrap-up, OpenBSD 5.4 notes, and more!</a></h3>
 
-<p><a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">Part 1</a>, <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html">Part 2</a>, <a href="http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html">Part 3</a></p>
+<p><a href="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5</a></p>
 ]]></content>
   </entry>
   
@@ -129,7 +131,10 @@
     <link href="http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/"/>
     <updated>2013-12-11T00:00:00+08:00</updated>
     <id>http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3</id>
-    <content type="html"><![CDATA[<p>This is part 3 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN. <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn-part2.html">Part 2</a> covered the installation of OpenVPN and configuring the PKI system.</p>
+    <content type="html"><![CDATA[<p>This is part 3 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software.</p>
+
+<p><a href="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a> &ndash; Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.<br/>
+<a href="http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a> &ndash; Installation of OpenVPN and configuring the PKI system.</p>
 
 <p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
 
@@ -231,7 +236,7 @@
 <span class='line-number'>33</span>
 <span class='line-number'>34</span>
 <span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>diff /etc/openvpn/server.conf /usr/local/share/examples/openvpn/sample-config-files/server.conf
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>diff /etc/openvpn/server.conf  /usr/local/share/examples/openvpn/sample-config-files/server.conf
 </span><span class='line'>32c32
 </span><span class='line'>&lt; port 80
 </span><span class='line'>---
@@ -306,7 +311,9 @@
 
 <p>Log output will appear in <em>/var/log/daemon</em>. At this point, there are no clients, so it&rsquo;s enough that the daemon starts without errors.</p>
 
-<h3>Part 4… Client configuration</h3>
+<h3><a href="http://johnchapin.boostrot.net/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4 &ndash; Client configuration</a></h3>
+
+<p><a href="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5</a></p>
 ]]></content>
   </entry>
   
@@ -315,7 +322,9 @@
     <link href="http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/"/>
     <updated>2013-12-09T00:00:00+08:00</updated>
     <id>http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2</id>
-    <content type="html"><![CDATA[<p>This is part 2 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.</p>
+    <content type="html"><![CDATA[<p>This is part 2 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software.</p>
+
+<p>In <a href="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.</p>
 
 <p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
 
@@ -380,34 +389,34 @@
 <span class='line-number'>26</span>
 <span class='line-number'>27</span>
 <span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>diff vars /usr/local/share/examples/openvpn/easy-rsa/2.0/vars
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>$ diff vars /usr/local/share/examples/openvpn/easy-rsa/2.0/vars
 </span><span class='line'>29c29
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_CONFIG</span><span class="o">=</span><span class="s2">&quot;$EASY_RSA/openssl-1.0.0.cnf&quot;</span>
-</span><span class='line'>---
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_CONFIG</span><span class="o">=</span><span class="sb">`</span><span class="nv">$EASY_RSA</span>/whichopensslcnf <span class="nv">$EASY_RSA</span><span class="sb">`</span>
+</span><span class='line'>&lt; export KEY_CONFIG=&quot;$EASY_RSA/openssl-1.0.0.cnf&quot;
+</span><span class='line'><span class="gd">---</span>
+</span><span class='line'>&gt; export KEY_CONFIG=`$EASY_RSA/whichopensslcnf $EASY_RSA`
 </span><span class='line'>53c53
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_SIZE</span><span class="o">=</span>4096
-</span><span class='line'>---
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_SIZE</span><span class="o">=</span>1024
+</span><span class='line'>&lt; export KEY_SIZE=4096
+</span><span class='line'><span class="gd">---</span>
+</span><span class='line'>&gt; export KEY_SIZE=1024
 </span><span class='line'>64,71c64,72
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_COUNTRY</span><span class="o">=</span><span class="s2">&quot;ZZcountry&quot;</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_PROVINCE</span><span class="o">=</span><span class="s2">&quot;ZZprovince&quot;</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_CITY</span><span class="o">=</span><span class="s2">&quot;ZZcity&quot;</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_ORG</span><span class="o">=</span><span class="s2">&quot;example&quot;</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_EMAIL</span><span class="o">=</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_CN</span><span class="o">=</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_NAME</span><span class="o">=</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_OU</span><span class="o">=</span>
-</span><span class='line'>---
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_COUNTRY</span><span class="o">=</span><span class="s2">&quot;US&quot;</span>
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_PROVINCE</span><span class="o">=</span><span class="s2">&quot;CA&quot;</span>
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_CITY</span><span class="o">=</span><span class="s2">&quot;SanFrancisco&quot;</span>
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_ORG</span><span class="o">=</span><span class="s2">&quot;Fort-Funston&quot;</span>
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_EMAIL</span><span class="o">=</span><span class="s2">&quot;me@myhost.mydomain&quot;</span>
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_EMAIL</span><span class="o">=</span>mail@host.domain
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_CN</span><span class="o">=</span>changeme
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_NAME</span><span class="o">=</span>changeme
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_OU</span><span class="o">=</span>changeme
+</span><span class='line'>&lt; export KEY_COUNTRY=&quot;ZZcountry&quot;
+</span><span class='line'>&lt; export KEY_PROVINCE=&quot;ZZprovince&quot;
+</span><span class='line'>&lt; export KEY_CITY=&quot;ZZcity&quot;
+</span><span class='line'>&lt; export KEY_ORG=&quot;example&quot;
+</span><span class='line'>&lt; export KEY_EMAIL=
+</span><span class='line'>&lt; export KEY_CN=
+</span><span class='line'>&lt; export KEY_NAME=
+</span><span class='line'>&lt; export KEY_OU=
+</span><span class='line'><span class="gd">---</span>
+</span><span class='line'>&gt; export KEY_COUNTRY=&quot;US&quot;
+</span><span class='line'>&gt; export KEY_PROVINCE=&quot;CA&quot;
+</span><span class='line'>&gt; export KEY_CITY=&quot;SanFrancisco&quot;
+</span><span class='line'>&gt; export KEY_ORG=&quot;Fort-Funston&quot;
+</span><span class='line'>&gt; export KEY_EMAIL=&quot;me@myhost.mydomain&quot;
+</span><span class='line'>&gt; export KEY_EMAIL=mail@host.domain
+</span><span class='line'>&gt; export KEY_CN=changeme
+</span><span class='line'>&gt; export KEY_NAME=changeme
+</span><span class='line'>&gt; export KEY_OU=changeme
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -475,7 +484,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3><a href="http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html">Part 3 &ndash; Running OpenVPN on OpenBSD</a></h3>
+<h3><a href="http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3 &ndash; Running OpenVPN on OpenBSD</a></h3>
+
+<p><a href="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5</a></p>
 ]]></content>
   </entry>
   
@@ -488,6 +499,8 @@
 
 <p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
 
+<hr />
+
 <h3>Virtual Private Server</h3>
 
 <p>I prefer a virtual private server (VPS) over buying, configuring, shipping, upgrading, and disposing of a Real Machine™. Using QEMU/KVM, the hosting company <a href="http://transip.eu">TransIP</a> supports VPSs running <a href="http://www.openbsd.org">OpenBSD</a> 5.3. I&rsquo;m currently using their &ldquo;Blade VPS X1&rdquo; product, which costs €10/month and provides 1GB memory, 50GB storage, 1TB transfer, and importantly, a static IPv4 address.</p>
@@ -498,6 +511,8 @@
 <h3>Why OpenBSD?</h3>
 
 <p>I trust OpenBSD to be the most secure operating system available, and I have several years of experience installing and using it. The OpenBSD development team is world-renowned for their commitment to security, and I truly believe that there is no better general-purpose operating system to use as a basis for this project.</p>
+
+<p><img src="http://openbsd.org/images/RoyPuffy.jpg" title="OpenBSD Roy Puffy" alt="" /></p>
 
 <p>TransIP supplies installation files for OpenBSD 5.3. Unfortunately, the OpenBSD project does <em>not</em> digitally sign their releases, instead choosing only to provide SHA256 hashes of the installation set files to protect against corruption or tampering. In their own words, <a href="http://www.openbsd.org/faq/faq3.html#Verify">&ldquo;If the men in black suits are out to get you, they&rsquo;re going to get you.&rdquo;</a></p>
 
@@ -520,7 +535,9 @@
 
 <p>This represents the bare minimum OpenBSD system necessary to support an OpenVPN server. Any additional software or services represent additional, unnecessary security risk.</p>
 
-<h3><a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html">Part 2 &ndash; OpenVPN Installation and PKI Configuration</a></h3>
+<h3><a href="http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2 &ndash; OpenVPN Installation and PKI Configuration</a></h3>
+
+<p><a href="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>, <a href="http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5</a></p>
 ]]></content>
   </entry>
   

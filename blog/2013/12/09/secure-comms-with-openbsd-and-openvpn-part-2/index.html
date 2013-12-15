@@ -103,7 +103,9 @@
   </header>
 
 
-<div class="entry-content"><p>This is part 2 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.</p>
+<div class="entry-content"><p>This is part 2 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software.</p>
+
+<p>In <a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.</p>
 
 <p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
 
@@ -168,34 +170,34 @@
 <span class='line-number'>26</span>
 <span class='line-number'>27</span>
 <span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>diff vars /usr/local/share/examples/openvpn/easy-rsa/2.0/vars
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>$ diff vars /usr/local/share/examples/openvpn/easy-rsa/2.0/vars
 </span><span class='line'>29c29
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_CONFIG</span><span class="o">=</span><span class="s2">&quot;$EASY_RSA/openssl-1.0.0.cnf&quot;</span>
-</span><span class='line'>---
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_CONFIG</span><span class="o">=</span><span class="sb">`</span><span class="nv">$EASY_RSA</span>/whichopensslcnf <span class="nv">$EASY_RSA</span><span class="sb">`</span>
+</span><span class='line'>&lt; export KEY_CONFIG=&quot;$EASY_RSA/openssl-1.0.0.cnf&quot;
+</span><span class='line'><span class="gd">---</span>
+</span><span class='line'>&gt; export KEY_CONFIG=`$EASY_RSA/whichopensslcnf $EASY_RSA`
 </span><span class='line'>53c53
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_SIZE</span><span class="o">=</span>4096
-</span><span class='line'>---
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_SIZE</span><span class="o">=</span>1024
+</span><span class='line'>&lt; export KEY_SIZE=4096
+</span><span class='line'><span class="gd">---</span>
+</span><span class='line'>&gt; export KEY_SIZE=1024
 </span><span class='line'>64,71c64,72
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_COUNTRY</span><span class="o">=</span><span class="s2">&quot;ZZcountry&quot;</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_PROVINCE</span><span class="o">=</span><span class="s2">&quot;ZZprovince&quot;</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_CITY</span><span class="o">=</span><span class="s2">&quot;ZZcity&quot;</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_ORG</span><span class="o">=</span><span class="s2">&quot;example&quot;</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_EMAIL</span><span class="o">=</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_CN</span><span class="o">=</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_NAME</span><span class="o">=</span>
-</span><span class='line'>&lt; <span class="nb">export </span><span class="nv">KEY_OU</span><span class="o">=</span>
-</span><span class='line'>---
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_COUNTRY</span><span class="o">=</span><span class="s2">&quot;US&quot;</span>
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_PROVINCE</span><span class="o">=</span><span class="s2">&quot;CA&quot;</span>
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_CITY</span><span class="o">=</span><span class="s2">&quot;SanFrancisco&quot;</span>
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_ORG</span><span class="o">=</span><span class="s2">&quot;Fort-Funston&quot;</span>
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_EMAIL</span><span class="o">=</span><span class="s2">&quot;me@myhost.mydomain&quot;</span>
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_EMAIL</span><span class="o">=</span>mail@host.domain
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_CN</span><span class="o">=</span>changeme
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_NAME</span><span class="o">=</span>changeme
-</span><span class='line'>&gt; <span class="nb">export </span><span class="nv">KEY_OU</span><span class="o">=</span>changeme
+</span><span class='line'>&lt; export KEY_COUNTRY=&quot;ZZcountry&quot;
+</span><span class='line'>&lt; export KEY_PROVINCE=&quot;ZZprovince&quot;
+</span><span class='line'>&lt; export KEY_CITY=&quot;ZZcity&quot;
+</span><span class='line'>&lt; export KEY_ORG=&quot;example&quot;
+</span><span class='line'>&lt; export KEY_EMAIL=
+</span><span class='line'>&lt; export KEY_CN=
+</span><span class='line'>&lt; export KEY_NAME=
+</span><span class='line'>&lt; export KEY_OU=
+</span><span class='line'><span class="gd">---</span>
+</span><span class='line'>&gt; export KEY_COUNTRY=&quot;US&quot;
+</span><span class='line'>&gt; export KEY_PROVINCE=&quot;CA&quot;
+</span><span class='line'>&gt; export KEY_CITY=&quot;SanFrancisco&quot;
+</span><span class='line'>&gt; export KEY_ORG=&quot;Fort-Funston&quot;
+</span><span class='line'>&gt; export KEY_EMAIL=&quot;me@myhost.mydomain&quot;
+</span><span class='line'>&gt; export KEY_EMAIL=mail@host.domain
+</span><span class='line'>&gt; export KEY_CN=changeme
+</span><span class='line'>&gt; export KEY_NAME=changeme
+</span><span class='line'>&gt; export KEY_OU=changeme
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -263,7 +265,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3><a href="http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html">Part 3 &ndash; Running OpenVPN on OpenBSD</a></h3>
+<h3><a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3 &ndash; Running OpenVPN on OpenBSD</a></h3>
+
+<p><a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a>, <a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a>, <a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a>, <a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>, <a href="/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5</a></p>
 </div>
 
 

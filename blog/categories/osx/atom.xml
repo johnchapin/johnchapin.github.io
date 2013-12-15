@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Osx | johnchapin.boostrot.net]]></title>
   <link href="http://johnchapin.boostrot.net/blog/categories/osx/atom.xml" rel="self"/>
   <link href="http://johnchapin.boostrot.net/"/>
-  <updated>2013-12-15T06:10:26+08:00</updated>
+  <updated>2013-12-15T23:05:28+08:00</updated>
   <id>http://johnchapin.boostrot.net/</id>
   <author>
     <name><![CDATA[John Chapin]]></name>
@@ -20,9 +20,9 @@
     <id>http://johnchapin.boostrot.net/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4</id>
     <content type="html"><![CDATA[<p>This is part 4 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software.</p>
 
-<p>In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.<br/>
-<a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html">Part 2</a> covered the installation of OpenVPN and configuring the PKI system.<br/>
-<a href="http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html">Part 3</a> was a walk-through of OpenVPN configuration and actually running the OpenVPN daemon.</p>
+<p><a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a> &ndash; Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.<br/>
+<a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a> &ndash; Installation of OpenVPN and configuring the PKI system.<br/>
+<a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a> &ndash; OpenVPN configuration and actually running the OpenVPN daemon.</p>
 
 <p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
 
@@ -39,7 +39,7 @@
 
 <p>Before configuring the VPN, transfer the CA certificate and the client certificate and key from the VPN server to your client computer:</p>
 
-<p><code>
+<p><code>bash
 $ scp user@vpn.example.com:~/easy-rsa/keys/ca.crt ~/Desktop/
 $ scp user@vpn.example.com:~/easy-rsa/keys/client1.example.com.crt ~/Desktop/
 $ scp user@vpn.example.com:~/easy-rsa/keys/client1.example.com.key ~/Desktop/
@@ -51,15 +51,15 @@ $ scp user@vpn.example.com:~/easy-rsa/keys/client1.example.com.key ~/Desktop/
 
 <p>Open the Tunnelblick application. On the <em>Configurations</em> tab, click on the + icon in the lower left to add a new configuration. When prompted, select <em>&ldquo;I DO NOT have configuration files&rdquo;</em>.</p>
 
-<p><a href="http://imgur.com/7Q69mXG"><img src="http://i.imgur.com/7Q69mXGl.png" title="Hosted by imgur.com"/></a></p>
+<p><a href="http://imgur.com/7Q69mXG"><img src="http://i.imgur.com/7Q69mXGl.png" alt="" /></a></p>
 
 <p>Next, select <em>&ldquo;Create sample configuration and edit it&rdquo;</em>.</p>
 
-<p><a href="http://imgur.com/1jx0mcs"><img src="http://i.imgur.com/1jx0mcsl.png" title="Hosted by imgur.com"/></a></p>
+<p><a href="http://imgur.com/1jx0mcs"><img src="http://i.imgur.com/1jx0mcsl.png" alt="" /></a></p>
 
 <p>This process will create a sample configuration and put it on the Desktop.</p>
 
-<p><a href="http://imgur.com/NtO3i6R"><img src="http://i.imgur.com/NtO3i6Rl.png" title="Hosted by imgur.com"/></a></p>
+<p><a href="http://imgur.com/NtO3i6R"><img src="http://i.imgur.com/NtO3i6Rl.png" alt="" /></a></p>
 
 <p>Move the downloaded certificates and key into the configuration folder:</p>
 
@@ -96,19 +96,19 @@ key client.key
 
 <p>The Tunnelblick configuration folder can be renamed (in this case, to &ldquo;Example VPN&rdquo;). To use this configuration in Tunnelblick, add the <em>.tblk</em> extension to the folder name, and then double-click the folder to install the configuration in Tunnelblick.</p>
 
-<p><a href="http://imgur.com/uKnpOVc"><img src="http://i.imgur.com/uKnpOVcl.png" title="Hosted by imgur.com"/></a></p>
+<p><a href="http://imgur.com/uKnpOVc"><img src="http://i.imgur.com/uKnpOVcl.png" alt="" /></a></p>
 
 <h3>Running Tunnelblick</h3>
 
 <p>Click on the &ldquo;Railroad Tunnel&rdquo; icon in the Mac OS X menu bar, and select the &ldquo;Connect Example VPN&rdquo; option.</p>
 
-<p><a href="http://imgur.com/G0lXEOn"><img src="http://i.imgur.com/G0lXEOnl.png" title="Hosted by imgur.com"/></a></p>
+<p><a href="http://imgur.com/G0lXEOn"><img src="http://i.imgur.com/G0lXEOnl.png" alt="" /></a></p>
 
 <p><strong>That&rsquo;s it</strong> &ndash; you&rsquo;re now using Tunnelblick to route your Internet communications through OpenVPN running on a VPS-hosted OpenBSD server.</p>
 
-<h3>Part 5&hellip; Wrap-up, OpenBSD 5.4 notes, and more!</h3>
+<h3><a href="/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5 &ndash; Wrap-up, OpenBSD 5.4 notes, and more!</a></h3>
 
-<p><a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">Part 1</a>, <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html">Part 2</a>, <a href="http://johnchapin.blogspot.nl/2013/12/secure-comms-with-openbsd-and-openvpn_11.html">Part 3</a></p>
+<p><a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a>, <a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a>, <a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a>, <a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>, <a href="/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5</a></p>
 ]]></content>
   </entry>
   

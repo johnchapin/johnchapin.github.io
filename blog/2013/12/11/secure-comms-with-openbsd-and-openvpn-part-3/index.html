@@ -9,7 +9,7 @@
   <meta name="author" content="John Chapin">
 
   
-  <meta name="description" content="This is part 3 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In part 1, I set up an &hellip;">
+  <meta name="description" content="This is part 3 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. Part 1 &ndash; Set up of &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,7 +103,10 @@
   </header>
 
 
-<div class="entry-content"><p>This is part 3 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software. In <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn.html">part 1</a>, I set up an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN. <a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn-part2.html">Part 2</a> covered the installation of OpenVPN and configuring the PKI system.</p>
+<div class="entry-content"><p>This is part 3 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software.</p>
+
+<p><a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a> &ndash; Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.<br/>
+<a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a> &ndash; Installation of OpenVPN and configuring the PKI system.</p>
 
 <p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
 
@@ -205,7 +208,7 @@
 <span class='line-number'>33</span>
 <span class='line-number'>34</span>
 <span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>diff /etc/openvpn/server.conf /usr/local/share/examples/openvpn/sample-config-files/server.conf
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>diff /etc/openvpn/server.conf  /usr/local/share/examples/openvpn/sample-config-files/server.conf
 </span><span class='line'>32c32
 </span><span class='line'>&lt; port 80
 </span><span class='line'>---
@@ -280,7 +283,9 @@
 
 <p>Log output will appear in <em>/var/log/daemon</em>. At this point, there are no clients, so it&rsquo;s enough that the daemon starts without errors.</p>
 
-<h3>Part 4… Client configuration</h3>
+<h3><a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4 &ndash; Client configuration</a></h3>
+
+<p><a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a>, <a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a>, <a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a>, <a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>, <a href="/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5</a></p>
 </div>
 
 

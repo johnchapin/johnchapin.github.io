@@ -107,6 +107,8 @@
 
 <p>It should be noted that even these measures are only securing part of my traffic. Everything that exits my VPN endpoint is protected only by whatever protocol-specific security measures are already in place (e.g. HTTPS for web traffic).</p>
 
+<hr />
+
 <h3>Virtual Private Server</h3>
 
 <p>I prefer a virtual private server (VPS) over buying, configuring, shipping, upgrading, and disposing of a Real Machine™. Using QEMU/KVM, the hosting company <a href="http://transip.eu">TransIP</a> supports VPSs running <a href="http://www.openbsd.org">OpenBSD</a> 5.3. I&rsquo;m currently using their &ldquo;Blade VPS X1&rdquo; product, which costs €10/month and provides 1GB memory, 50GB storage, 1TB transfer, and importantly, a static IPv4 address.</p>
@@ -117,6 +119,8 @@
 <h3>Why OpenBSD?</h3>
 
 <p>I trust OpenBSD to be the most secure operating system available, and I have several years of experience installing and using it. The OpenBSD development team is world-renowned for their commitment to security, and I truly believe that there is no better general-purpose operating system to use as a basis for this project.</p>
+
+<p><img src="http://openbsd.org/images/RoyPuffy.jpg" title="OpenBSD Roy Puffy" alt="" /></p>
 
 <p>TransIP supplies installation files for OpenBSD 5.3. Unfortunately, the OpenBSD project does <em>not</em> digitally sign their releases, instead choosing only to provide SHA256 hashes of the installation set files to protect against corruption or tampering. In their own words, <a href="http://www.openbsd.org/faq/faq3.html#Verify">&ldquo;If the men in black suits are out to get you, they&rsquo;re going to get you.&rdquo;</a></p>
 
@@ -139,7 +143,9 @@
 
 <p>This represents the bare minimum OpenBSD system necessary to support an OpenVPN server. Any additional software or services represent additional, unnecessary security risk.</p>
 
-<h3><a href="http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html">Part 2 &ndash; OpenVPN Installation and PKI Configuration</a></h3>
+<h3><a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2 &ndash; OpenVPN Installation and PKI Configuration</a></h3>
+
+<p><a href="/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/">Part 1</a>, <a href="/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/">Part 2</a>, <a href="/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/">Part 3</a>, <a href="/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/">Part 4</a>, <a href="/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/">Part 5</a></p>
 </div>
 
 
