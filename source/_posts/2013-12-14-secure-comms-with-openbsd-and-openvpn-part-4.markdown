@@ -39,15 +39,15 @@ Note that we could have generated the client certificate and key on the client m
 
 Open the Tunnelblick application. On the _Configurations_ tab, click on the + icon in the lower left to add a new configuration. When prompted, select _"I DO NOT have configuration files"_.
 
-<a href="http://imgur.com/7Q69mXG"><img src="http://i.imgur.com/7Q69mXGl.png" title="Hosted by imgur.com"/></a>
+[![](http://i.imgur.com/7Q69mXGl.png)](http://imgur.com/7Q69mXG)
 
 Next, select _"Create sample configuration and edit it"_.
 
-<a href="http://imgur.com/1jx0mcs"><img src="http://i.imgur.com/1jx0mcsl.png" title="Hosted by imgur.com"/></a>
+[![](http://i.imgur.com/1jx0mcsl.png)](http://imgur.com/1jx0mcs)
 
 This process will create a sample configuration and put it on the Desktop.
 
-<a href="http://imgur.com/NtO3i6R"><img src="http://i.imgur.com/NtO3i6Rl.png" title="Hosted by imgur.com"/></a>
+[![](http://i.imgur.com/NtO3i6Rl.png)](http://imgur.com/NtO3i6R)
 
 Move the downloaded certificates and key into the configuration folder:
 
@@ -79,13 +79,13 @@ Here's a diff of those changes:
 
 The Tunnelblick configuration folder can be renamed (in this case, to "Example VPN"). To use this configuration in Tunnelblick, add the _.tblk_ extension to the folder name, and then double-click the folder to install the configuration in Tunnelblick.
 
-<a href="http://imgur.com/uKnpOVc"><img src="http://i.imgur.com/uKnpOVcl.png" title="Hosted by imgur.com"/></a>
+[![](http://i.imgur.com/uKnpOVcl.png)](http://imgur.com/uKnpOVc)
 
 ### Running Tunnelblick
 
 Click on the "Railroad Tunnel" icon in the Mac OS X menu bar, and select the "Connect Example VPN" option.
 
-<a href="http://imgur.com/G0lXEOn"><img src="http://i.imgur.com/G0lXEOnl.png" title="Hosted by imgur.com"/></a>
+[![](http://i.imgur.com/G0lXEOnl.png)](http://imgur.com/G0lXEOn)
 
 **That's it** - you're now using Tunnelblick to route your Internet communications through OpenVPN running on a VPS-hosted OpenBSD server.
 

@@ -56,7 +56,7 @@ I made the following changes to the default configuration:
 Here's the diff of the _server.conf_ changes:
 
 ``` bash
-$ diff /etc/openvpn/server.conf  /usr/local/share/examples/openvpn/sample-config-files/server.conf           
+$ diff /etc/openvpn/server.conf  /usr/local/share/examples/openvpn/sample-config-files/server.conf
 32c32
 < port 80
 ---

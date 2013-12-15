@@ -41,7 +41,7 @@ $ cd easyrsa
 The version of easy-rsa that's included with OpenVPN on OpenBSD 5.3 is missing the _whichopenssl_ script, so in the _vars_ file, the _KEY\_CONFIG_ line must be edited in addition to the other _KEY\*_ lines. Here is a diff with my changes:
 
 ``` diff
-$ diff vars /usr/local/share/examples/openvpn/easy-rsa/2.0/vars     
+$ diff vars /usr/local/share/examples/openvpn/easy-rsa/2.0/vars
 29c29
 < export KEY_CONFIG="$EASY_RSA/openssl-1.0.0.cnf"
 ---
