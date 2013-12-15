@@ -6,6 +6,7 @@ comments: true
 categories: openbsd openvpn
 published: true
 ---
+
 This is part 3 in a series of posts detailing how I'm securing my Internet communications using open-source software.
 
 [Part 1][part1] - Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.  
