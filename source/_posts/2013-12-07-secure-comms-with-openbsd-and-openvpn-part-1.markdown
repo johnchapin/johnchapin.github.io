@@ -15,8 +15,6 @@ It should be noted that even these measures are only securing part of my traffic
 
 I prefer a virtual private server (VPS) over buying, configuring, shipping, upgrading, and disposing of a Real Machine™. Using QEMU/KVM, the hosting company [TransIP](http://transip.eu) supports VPSs running [OpenBSD](http://www.openbsd.org) 5.3. I'm currently using their "Blade VPS X1" product, which costs €10/month and provides 1GB memory, 50GB storage, 1TB transfer, and importantly, a static IPv4 address.
 
-<!-- more -->
-
 ### Why OpenBSD?
 
 I trust OpenBSD to be the most secure operating system available, and I have several years of experience installing and using it. The OpenBSD development team is world-renowned for their commitment to security, and I truly believe that there is no better general-purpose operating system to use as a basis for this project.
@@ -39,4 +37,12 @@ When given the opportunity to select OpenBSD install packages, I chose only:
 
 This represents the bare minimum OpenBSD system necessary to support an OpenVPN server. Any additional software or services represent additional, unnecessary security risk.
 
-### [Part 2 - OpenVPN Installation and PKI Configuration](http://johnchapin.blogspot.com/2013/12/secure-comms-with-openbsd-and-openvpn_5552.html)
+### [Part 2 - OpenVPN Installation and PKI Configuration][part2]
+
+[Part 1][part1], [Part 2][part2], [Part 3][part3], [Part 4][part4], [Part 5][part5]
+
+[part1]:/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/
+[part2]:/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/
+[part3]:/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/
+[part4]:/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/
+[part5]:/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/
