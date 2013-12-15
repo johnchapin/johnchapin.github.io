@@ -27,7 +27,7 @@ To install, simply [download](https://code.google.com/p/tunnelblick/wiki/Downloa
 
 Before configuring the VPN, transfer the CA certificate and the client certificate and key from the VPN server to your client computer:
 
-```
+``` bash
 $ scp user@vpn.example.com:~/easy-rsa/keys/ca.crt ~/Desktop/
 $ scp user@vpn.example.com:~/easy-rsa/keys/client1.example.com.crt ~/Desktop/
 $ scp user@vpn.example.com:~/easy-rsa/keys/client1.example.com.key ~/Desktop/
@@ -47,9 +47,7 @@ Next, select _"Create sample configuration and edit it"_.
 
 This process will create a sample configuration and put it on the Desktop.
 
-
 <a href="http://imgur.com/NtO3i6R"><img src="http://i.imgur.com/NtO3i6Rl.png" title="Hosted by imgur.com"/></a>
-
 
 Move the downloaded certificates and key into the configuration folder:
 
@@ -79,8 +77,7 @@ Here's a diff of those changes:
 > key client.key
 ```
 
-The Tunnelblick configuration folder can be renamed (in this case, to "Example VPN"). To use this configuration in Tunnelblick, add the _.tblk_ extension to the folder name, and then 
-double-click the folder to install the configuration in Tunnelblick.
+The Tunnelblick configuration folder can be renamed (in this case, to "Example VPN"). To use this configuration in Tunnelblick, add the _.tblk_ extension to the folder name, and then double-click the folder to install the configuration in Tunnelblick.
 
 <a href="http://imgur.com/uKnpOVc"><img src="http://i.imgur.com/uKnpOVcl.png" title="Hosted by imgur.com"/></a>
 

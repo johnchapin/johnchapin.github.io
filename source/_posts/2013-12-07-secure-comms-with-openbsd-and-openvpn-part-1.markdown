@@ -23,6 +23,8 @@ I prefer a virtual private server (VPS) over buying, configuring, shipping, upgr
 
 I trust OpenBSD to be the most secure operating system available, and I have several years of experience installing and using it. The OpenBSD development team is world-renowned for their commitment to security, and I truly believe that there is no better general-purpose operating system to use as a basis for this project.
 
+![](http://openbsd.org/images/RoyPuffy.jpg "OpenBSD Roy Puffy")
+
 TransIP supplies installation files for OpenBSD 5.3. Unfortunately, the OpenBSD project does *not* digitally sign their releases, instead choosing only to provide SHA256 hashes of the installation set files to protect against corruption or tampering. In their own words, ["If the men in black suits are out to get you, they're going to get you."](http://www.openbsd.org/faq/faq3.html#Verify)
 
 With that in mind, when using a VPS, we have no choice but to trust that the provider hasn't tampered with the installation process or tapped the VNC console (before SSH can be enabled) to capture our disk encryption or system passwords.

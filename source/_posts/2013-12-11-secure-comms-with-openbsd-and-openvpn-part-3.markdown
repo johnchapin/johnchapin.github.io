@@ -24,7 +24,7 @@ With the OpenVPN package installed and the PKI components in place, configuring 
 
 Make an OpenVPN configuration directory in _/etc_, and add a copy of the sample configuration, the CA certificate, the VPN server certificate and private key, and the Diffie-Hellman parameters:
 
-```bash
+``` bash
 # As root...
 $ mkdir /etc/openvpn
 
@@ -55,7 +55,7 @@ I made the following changes to the default configuration:
 
 Here's the diff of the _server.conf_ changes:
 
-```bash
+``` bash
 $ diff /etc/openvpn/server.conf  /usr/local/share/examples/openvpn/sample-config-files/server.conf           
 32c32
 < port 80
@@ -101,19 +101,19 @@ The OS requires a few additional tweaks to run OpenVPN.
 
 Turn on packet forwarding:
 
-```bash
+``` bash
 $ sysctl -n net.inet.ip.forwarding=1
 ```
 
 Add the following line to _pf.conf_ to perform Network Address Translation on VPN connections (the 10.8.0.0/24 block is distributed via DHCP to OpenVPN clients):
 
-```pf
+```
 pass out on em0 from 10.8.0.0/24 to any nat-to (em0)
 ```
 
 ### Running the OpenVPN daemon
 
-```bash
+``` bash
 $ /usr/local/sbin/openvpn --daemon --config /etc/openvpn/server.conf
 
 # Verify that it's actually running:
