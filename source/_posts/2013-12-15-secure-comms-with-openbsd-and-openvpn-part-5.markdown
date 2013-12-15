@@ -4,7 +4,7 @@ title: "Secure comms with OpenBSD and OpenVPN, part 5"
 date: 2013-12-15 13:21:11 +0800
 comments: true
 categories: openvpn openbsd ios
-published: false
+published: true
 ---
 
 This is the fifth and final part in a series of posts detailing how I’m securing my Internet communications using open-source software.
