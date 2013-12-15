@@ -31,7 +31,7 @@ The bad:
 
 We ended up at the NYBC almost every other day. It was so consistent that it almost became hard to take a chance on something else, knowing we could have a good experience at NYBC.
 
-<a href="http://imgur.com/QeH3ACq"><img src="http://i.imgur.com/QeH3ACq.jpg" title="Hosted by imgur.com"/></a>  
+[![](http://i.imgur.com/QeH3ACq.jpg)](http://imgur.com/QeH3ACq)  
 Einstein's head, carefully enlarged, preserved, and mounted outside of the NYBC in El Cangrejo.
 
 ### Oasis #2: Bon Vivant, San Francisco
