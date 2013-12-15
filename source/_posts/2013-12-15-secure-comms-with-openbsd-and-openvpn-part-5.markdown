@@ -3,24 +3,26 @@ layout: post
 title: "Secure Comms with OpenBSD and OpenVPN, Part 5"
 date: 2013-12-15 13:21:11 +0800
 comments: true
-categories: openvpn openbsd
+categories: openvpn openbsd ios
 published: false
 ---
 
 This is the fifth and final part in a series of posts detailing how I’m securing my Internet communications using open-source software.
 
-[Part 1](/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/) - Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.  
-[Part 2](/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/) - Installation of OpenVPN and configuring the PKI system.  
-[Part 3](/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/) - OpenVPN configuration and actually running the OpenVPN daemon.  
-[Part 4](/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/) - Installation and configuration of the Tunnelblick OpenVPN client on Mac OS X.
+[Part 1][part1] - Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.  
+[Part 2][part2] - Installation of OpenVPN and configuring the PKI system.  
+[Part 3][part3] - OpenVPN configuration and actually running the OpenVPN daemon.  
+[Part 4][part4] - Installation and configuration of the Tunnelblick OpenVPN client on Mac OS X.
 
 ---
 
 ### OpenBSD 5.4
 
-A few weeks after I set up and configured the VPN system on OpenBSD 5.3, a new version of OpenBSD was released. This isn't too surprising of course, as the OpenBSD team releases every 6 months!
+A few weeks after I set up and configured the VPN system on OpenBSD 5.3, a [new version of OpenBSD](http://www.openbsd.org/54.html) was released. This isn't too surprising of course, as the OpenBSD team releases every 6 months!
 
 <!-- more -->
+
+![](http://www.openbsd.org/images/Puffia.jpg "OpenBSD 5.4 Puffia")
 
 Here are some relevant changes that I've noticed:
 
@@ -30,11 +32,11 @@ Here are some relevant changes that I've noticed:
 
 ### iOS Client
 
-There is an excellent and free [iOS application for OpenVPN](https://itunes.apple.com/app/openvpn-connect/id590379981). Configuration is simple, just build an OpenVPN client configuration (see [part 4](/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/)), and transfer the files to the OpenVPN application on your iOS device using iTunes.
+There is an excellent and free [iOS application for OpenVPN](https://itunes.apple.com/app/openvpn-connect/id590379981). Configuration is simple, just build an OpenVPN client configuration (see [Part 4][part4]), and transfer the files to the OpenVPN application on your iOS device using iTunes.
 
 Here's a screenshot of the OpenVPN client in action (with my actual VPN IP address blanked out):
 
-<a href="http://imgur.com/TsUwTfp"><img src="http://i.imgur.com/TsUwTfpl.jpg" title="Hosted by imgur.com"/></a>
+![](http://i.imgur.com/TsUwTfpl.jpg "OpenVPN iOS Application")
 
 ### Parting Thoughts
 
@@ -54,3 +56,8 @@ With that concern in mind, I have to admit that my paranoia has practical limits
 ### The Bottom Line
 
 **All of the technical measures in the world are unlikely to block a determined effort to access your communications.** The solution outlined in this series should be considered a deterrent to casual snooping, and nothing more.
+
+[part1]:/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/
+[part2]:/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/
+[part3]:/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/
+[part4]:/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/
