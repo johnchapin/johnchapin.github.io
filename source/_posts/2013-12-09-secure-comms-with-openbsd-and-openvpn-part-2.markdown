@@ -19,6 +19,8 @@ It should be noted that even these measures are only securing part of my traffic
 
 Installing and configuring the OpenVPN package can seem daunting at first, but given a relatively simple VPN architecture (many clients, one server), the setup is straightforward. Many of the steps below are cribbed from the [OpenVPN section of "Building VPNs on OpenBSD"](http://www.kernel-panic.it/openbsd/vpn/vpn4.html), which is 4 years old but still informative.
 
+<!-- more -->
+
 Install the OpenVPN package from the installation media or an official OpenBSD mirror site. The OpenBSD FAQ has [instructions](http://www.openbsd.org/faq/faq15.html#Easy) for setting up the package system.
 
 ```bash
