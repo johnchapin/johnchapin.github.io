@@ -9,10 +9,10 @@ published: false
 
 This is the fifth and final part in a series of posts detailing how I’m securing my Internet communications using open-source software.
 
-[Part 1]() - Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.  
-[Part 2]() - Installation of OpenVPN and configuring the PKI system.  
-[Part 3](/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/) - OpenVPN configuration and actually running the OpenVPN daemon.  
-[Part 4]() - Installation and configuration of the Tunnelblick OpenVPN client on Mac OS X.
+[Part 1](/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/) - Set up of an OpenBSD VPS with full-disk encryption and the minimum OS install necessary to run OpenVPN.  
+[Part 2](/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/) - Installation of OpenVPN and configuring the PKI system.  
+[Part 3](/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/) - OpenVPN configuration and actually running the OpenVPN daemon.  
+[Part 4](/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/) - Installation and configuration of the Tunnelblick OpenVPN client on Mac OS X.
 
 ---
 
@@ -28,7 +28,7 @@ Here are some relevant changes that I've noticed:
 
 ### iOS Client
 
-There is an excellent and free [iOS application for OpenVPN](https://itunes.apple.com/app/openvpn-connect/id590379981). Configuration is simple, just build an OpenVPN client configuration (see [part 4]()), and transfer the files to the OpenVPN application on your iOS device using iTunes.
+There is an excellent and free [iOS application for OpenVPN](https://itunes.apple.com/app/openvpn-connect/id590379981). Configuration is simple, just build an OpenVPN client configuration (see [part 4](/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/)), and transfer the files to the OpenVPN application on your iOS device using iTunes.
 
 Here's a screenshot of the OpenVPN client in action (with my actual VPN IP address blanked out):
 
