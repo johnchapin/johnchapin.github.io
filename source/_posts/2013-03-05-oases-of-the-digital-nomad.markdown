@@ -14,6 +14,8 @@ The weekday routine in Ciudad de Panama:
  3. GTFO before it gets too hot.  
  4. Find an oasis.
 
+<!-- more -->
+
 ### Oasis #1: New York Bagel Café, El Cangrejo
 
 The good:
