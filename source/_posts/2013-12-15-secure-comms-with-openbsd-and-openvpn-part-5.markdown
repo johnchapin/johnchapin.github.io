@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Secure Comms with OpenBSD and OpenVPN, Part 5"
+title: "Secure comms with OpenBSD and OpenVPN, part 5"
 date: 2013-12-15 13:21:11 +0800
 comments: true
 categories: openvpn openbsd ios
@@ -57,7 +57,10 @@ With that concern in mind, I have to admit that my paranoia has practical limits
 
 **All of the technical measures in the world are unlikely to block a determined effort to access your communications.** The solution outlined in this series should be considered a deterrent to casual snooping, and nothing more.
 
+[Part 1][part1], [Part 2][part2], [Part 3][part3], [Part 4][part4], [Part 5][part5]
+
 [part1]:/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/
 [part2]:/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/
 [part3]:/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/
 [part4]:/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/
+[part5]:/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/
