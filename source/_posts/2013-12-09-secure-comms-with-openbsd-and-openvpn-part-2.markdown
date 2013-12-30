@@ -15,6 +15,8 @@ It should be noted that even these measures are only securing part of my traffic
 
 ---
 
+_[Part 5][part5] of this series covers some changes to this process for OpenBSD 5.4!_
+
 ### OpenVPN Installation
 
 Installing and configuring the OpenVPN package can seem daunting at first, but given a relatively simple VPN architecture (many clients, one server), the setup is straightforward. Many of the steps below are cribbed from the [OpenVPN section of "Building VPNs on OpenBSD"](http://www.kernel-panic.it/openbsd/vpn/vpn4.html), which is 4 years old but still informative.
