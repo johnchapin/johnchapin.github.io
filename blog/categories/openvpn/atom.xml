@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Openvpn | johnchapin.boostrot.net]]></title>
   <link href="http://johnchapin.boostrot.net/blog/categories/openvpn/atom.xml" rel="self"/>
   <link href="http://johnchapin.boostrot.net/"/>
-  <updated>2014-01-07T11:42:36+07:00</updated>
+  <updated>2014-01-07T11:45:19+07:00</updated>
   <id>http://johnchapin.boostrot.net/</id>
   <author>
     <name><![CDATA[John Chapin]]></name>
@@ -390,8 +390,8 @@ $ diff vars /usr/local/share/examples/openvpn/easy-rsa/2.0/vars
 export KEY_PROVINCE=&ldquo;CA&rdquo;
 export KEY_CITY=&ldquo;SanFrancisco&rdquo;
 export KEY_ORG=&ldquo;Fort-Funston&rdquo;
-export KEY_EMAIL=&ldquo;<a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x6d;&#101;&#64;&#x6d;&#121;&#104;&#111;&#115;&#x74;&#46;&#109;&#x79;&#x64;&#x6f;&#109;&#x61;&#105;&#110;">&#109;&#101;&#x40;&#109;&#121;&#x68;&#x6f;&#x73;&#x74;&#46;&#109;&#x79;&#100;&#x6f;&#x6d;&#97;&#105;&#x6e;</a>&rdquo;
-export KEY_EMAIL=<a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#109;&#97;&#105;&#x6c;&#64;&#104;&#x6f;&#x73;&#116;&#x2e;&#x64;&#x6f;&#109;&#x61;&#x69;&#110;">&#x6d;&#97;&#105;&#108;&#x40;&#x68;&#x6f;&#x73;&#x74;&#x2e;&#100;&#x6f;&#109;&#97;&#x69;&#x6e;</a>
+export KEY_EMAIL=&ldquo;<a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#x6f;&#58;&#x6d;&#x65;&#64;&#x6d;&#x79;&#104;&#x6f;&#115;&#x74;&#46;&#109;&#x79;&#x64;&#111;&#109;&#x61;&#105;&#x6e;">&#x6d;&#101;&#x40;&#109;&#121;&#x68;&#111;&#x73;&#x74;&#x2e;&#x6d;&#x79;&#x64;&#111;&#109;&#x61;&#x69;&#110;</a>&rdquo;
+export KEY_EMAIL=<a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#111;&#58;&#109;&#97;&#105;&#x6c;&#64;&#104;&#111;&#115;&#x74;&#46;&#100;&#x6f;&#109;&#x61;&#105;&#x6e;">&#109;&#x61;&#105;&#x6c;&#64;&#104;&#111;&#115;&#x74;&#x2e;&#100;&#111;&#109;&#97;&#105;&#110;</a>
 export KEY_CN=changeme
 export KEY_NAME=changeme
 export KEY_OU=changeme
