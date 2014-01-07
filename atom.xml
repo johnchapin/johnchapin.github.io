@@ -4,7 +4,7 @@
   <title><![CDATA[johnchapin.boostrot.net]]></title>
   <link href="http://johnchapin.boostrot.net/atom.xml" rel="self"/>
   <link href="http://johnchapin.boostrot.net/"/>
-  <updated>2013-12-30T22:43:59+08:00</updated>
+  <updated>2014-01-07T11:42:36+07:00</updated>
   <id>http://johnchapin.boostrot.net/</id>
   <author>
     <name><![CDATA[John Chapin]]></name>
@@ -14,9 +14,77 @@
 
   
   <entry>
+    <title type="html"><![CDATA[The Digital Nomad's Guide to Entry Fees]]></title>
+    <link href="http://johnchapin.boostrot.net/blog/2014/01/07/the-digital-nomads-guide-to-entry-fees/"/>
+    <updated>2014-01-07T11:39:51+07:00</updated>
+    <id>http://johnchapin.boostrot.net/blog/2014/01/07/the-digital-nomads-guide-to-entry-fees</id>
+    <content type="html"><![CDATA[<p>Moment of panic. The flight lands in 15 minutes, and I&rsquo;ve just realized that I&rsquo;ll have to pay a Visa on Arrival (VOA) fee. What&rsquo;s worse is that I spent my last few dollars on gum and a magazine before I left, and it wasn&rsquo;t even a very good magazine.</p>
+
+<p>My empty pockets won&rsquo;t impress the immigration officer, and there isn&rsquo;t a single solitary clause in any book of international law that requires countries to station an ATM, bank branch, money changer, or gold mine in the controlled arrivals area of international airports.</p>
+
+<p>How could I have avoided this situation? This guide is an attempt to address some of the common monetary situations that need to be dealt with in airports, especially as they relate to paying VOA and similar fees.</p>
+
+<!-- more -->
+
+
+<h3>What will it cost to get in?</h3>
+
+<p>Find out if there&rsquo;s an <strong>entry fee, a visa fee, a reciprocity fee (looking at you, Chilé), or any other charge for entering a country.</strong> Verify what forms of payment they accept (Chilé takes credit cards, Vietnam requires cash).</p>
+
+<p>Be aware that some fees may only apply to some travelers. Reciprocity fees in particular can vary wildly depending on your country of citizenship.</p>
+
+<h3>Don&rsquo;t show up empty-handed</h3>
+
+<p>Some entry fees (for example, Chilé and Indonesia) can be paid with a credit card. Some countries require cash, and some even prefer <a href="http://en.wikipedia.org/wiki/Hard_currency">hard currency</a> instead of their own!</p>
+
+<p>Whatever the case, don&rsquo;t assume that you can &ldquo;deal with it when you get there.&rdquo; Some airport somewhere will blast your assumptions right out of the water. Here are some of the many faulty assumptions travelers make about dealing with fees in airports (and acquiring the money necessary to pay those fees.)</p>
+
+<p><strong>Faulty assumptions about (airport) ATMs:</strong></p>
+
+<ul>
+<li>There will be an ATM at the airport.</li>
+<li>There will be a usable ATM at the airport.</li>
+<li>There will be an ATM located <em>before</em> the arrival fee or visa counter.</li>
+<li>There will be an ATM that accepts my ATM card.</li>
+</ul>
+
+
+<p><strong>Faulty assumptions about money changers:</strong></p>
+
+<ul>
+<li>There will be a money changer at the airport.</li>
+<li>The money changer at the airport will be open.</li>
+<li>There will be a money changer located <em>before</em> the arrival fee or visa counter.</li>
+<li><p>There will be a money changer who will accept the type of currency I have.</p>
+
+<blockquote><p>Money changers will usually accept only hard currencies (USD, GBP, EUR), and their own regional currencies. Don&rsquo;t count on being able to exchange your Peruvian <em>Nuevo Soles</em> at the Jakarta Airport in Indonesia.</p></blockquote></li>
+<li><p>There will be a money changer who will accept the denominations of currency I have.</p>
+
+<blockquote><p>Especially at airports, money changers may not accept lower denominations. For example, I was unable to exchange 5,000 IDR notes (about 0.50 USD) at the Bangkok airport; the lowest denomination they would accept was the 10,000 IDR note. In Bali, money changers on the street would often only accept 20 USD notes and higher. That said, I dumped a pile of small denomination Malaysian <em>Ringgit</em> bills and loose change on a Singaporean money changer&rsquo;s desk, and he readily changed it.</p></blockquote></li>
+<li><p>There will be a money changer who will accept the currency I have in the condition it&rsquo;s in.</p>
+
+<blockquote><p>Money changers can be very picky about the condition of the currency they will accept. They may reject creased, marked bills, or dirty bills.</p></blockquote></li>
+</ul>
+
+
+<h3>Be prepared</h3>
+
+<ul>
+<li>Always carry a few clean, crisp, higher denomination, hard currency notes, and keep them in a safe place.</li>
+<li>If possible, acquire a small amount of your destination&rsquo;s currency before you leave. This isn&rsquo;t always an option, especially if you&rsquo;re flying halfway around the world, but it&rsquo;s worth doing if you can.</li>
+<li>If possible, carry two ATM cards! I learned this lesson the hard way in the Manila airport, when the only functioning ATM machine wouldn&rsquo;t accept my beat-up card.</li>
+<li>If possible, carry two credit cards (preferably one Visa and one Mastercard). Better yet, carry cards that have both a magnetic stripe <em>and</em> an EMV chip (I&rsquo;m working on an article covering chip cards).</li>
+</ul>
+
+
+<p>As always, feel free to post your questions in the comments section below. Happy traveling!</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[The Digital Nomad's Guide to Onward Travel]]></title>
     <link href="http://johnchapin.boostrot.net/blog/2013/12/30/the-digital-nomads-guide-to-onward-travel/"/>
-    <updated>2013-12-30T15:30:36+08:00</updated>
+    <updated>2013-12-30T14:30:36+07:00</updated>
     <id>http://johnchapin.boostrot.net/blog/2013/12/30/the-digital-nomads-guide-to-onward-travel</id>
     <content type="html"><![CDATA[<p>Like many travelers, I didn&rsquo;t realize that <strong>airlines can and will refuse to board passengers who might be denied entry to their destination.</strong></p>
 
@@ -110,7 +178,7 @@
   <entry>
     <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 5]]></title>
     <link href="http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5/"/>
-    <updated>2013-12-15T13:21:11+08:00</updated>
+    <updated>2013-12-15T12:21:11+07:00</updated>
     <id>http://johnchapin.boostrot.net/blog/2013/12/15/secure-comms-with-openbsd-and-openvpn-part-5</id>
     <content type="html"><![CDATA[<p>This is the fifth and final part in a series of posts detailing how I’m securing my Internet communications using open-source software.</p>
 
@@ -173,7 +241,7 @@
   <entry>
     <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 4]]></title>
     <link href="http://johnchapin.boostrot.net/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4/"/>
-    <updated>2013-12-14T11:28:34+08:00</updated>
+    <updated>2013-12-14T10:28:34+07:00</updated>
     <id>http://johnchapin.boostrot.net/blog/2013/12/14/secure-comms-with-openbsd-and-openvpn-part-4</id>
     <content type="html"><![CDATA[<p>This is part 4 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software.</p>
 
@@ -286,7 +354,7 @@
   <entry>
     <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 3]]></title>
     <link href="http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3/"/>
-    <updated>2013-12-11T00:00:00+08:00</updated>
+    <updated>2013-12-11T00:00:00+07:00</updated>
     <id>http://johnchapin.boostrot.net/blog/2013/12/11/secure-comms-with-openbsd-and-openvpn-part-3</id>
     <content type="html"><![CDATA[<p>This is part 3 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software.</p>
 
@@ -477,7 +545,7 @@
   <entry>
     <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 2]]></title>
     <link href="http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2/"/>
-    <updated>2013-12-09T00:00:00+08:00</updated>
+    <updated>2013-12-09T00:00:00+07:00</updated>
     <id>http://johnchapin.boostrot.net/blog/2013/12/09/secure-comms-with-openbsd-and-openvpn-part-2</id>
     <content type="html"><![CDATA[<p>This is part 2 in a series of posts detailing how I&rsquo;m securing my Internet communications using open-source software.</p>
 
@@ -652,7 +720,7 @@
   <entry>
     <title type="html"><![CDATA[Secure Comms With OpenBSD and OpenVPN, Part 1]]></title>
     <link href="http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1/"/>
-    <updated>2013-12-07T00:00:00+08:00</updated>
+    <updated>2013-12-07T00:00:00+07:00</updated>
     <id>http://johnchapin.boostrot.net/blog/2013/12/07/secure-comms-with-openbsd-and-openvpn-part-1</id>
     <content type="html"><![CDATA[<p>This is part 1 in a series of posts detailing how I secure my Internet communications using OpenBSD, OpenVPN, and other open-source software.</p>
 
@@ -703,7 +771,7 @@
   <entry>
     <title type="html"><![CDATA[Oases of the Digital Nomad]]></title>
     <link href="http://johnchapin.boostrot.net/blog/2013/03/05/oases-of-the-digital-nomad/"/>
-    <updated>2013-03-05T15:30:00+08:00</updated>
+    <updated>2013-03-05T14:30:00+07:00</updated>
     <id>http://johnchapin.boostrot.net/blog/2013/03/05/oases-of-the-digital-nomad</id>
     <content type="html"><![CDATA[<p>The weekday routine in Ciudad de Panama:</p>
 
@@ -805,7 +873,7 @@ Einstein&rsquo;s head, carefully enlarged, preserved, and mounted outside of the
   <entry>
     <title type="html"><![CDATA[Out Into the World.]]></title>
     <link href="http://johnchapin.boostrot.net/blog/2013/01/17/out-into-the-world/"/>
-    <updated>2013-01-17T16:00:00+08:00</updated>
+    <updated>2013-01-17T15:00:00+07:00</updated>
     <id>http://johnchapin.boostrot.net/blog/2013/01/17/out-into-the-world</id>
     <content type="html"><![CDATA[<p>Several people have asked me, &ldquo;John, you handsome devil, how exactly did you manage to arrange your life to be able to pick up and go out into the world with no plans and no return ticket?&rdquo;</p>
 
